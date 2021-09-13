@@ -1,4 +1,4 @@
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -58,12 +58,11 @@ genshin_window_exist()
 CoordMode, Pixel, Client
 state:="unknown"
 statePredict:="unknown"
-statePredictConfi:=0
+stateUnknownStart:=0
 SetTimer, test, -100
 Return
 
-
-tt(txt, delay=1000)
+tt(txt, delay=2000)
 {
 	ToolTip, % txt, 1, 1
 	SetTimer, ktt, % -delay
@@ -100,23 +99,28 @@ ImageSearch, X, Y, winW*0.825, winH*0.875, winW, winH, *32 *TransFuchsia assets\
 if(!ErrorLevel){
 	state:="ready"
 	statePredict:=state
+	stateUnknownStart := 0
 	return
 }
 ImageSearch, X, Y, winW*0.825, winH*0.875, winW, winH, *32 *TransFuchsia assets\reel.png
 if(!ErrorLevel){
 	state:="reel"
 	statePredict:=state
+	stateUnknownStart := 0
 	return
 }
 ImageSearch, X, Y, winW*0.825, winH*0.875, winW, winH, *32 *TransFuchsia assets\casting.png
 if(!ErrorLevel){
 	state:="casting"
 	statePredict:=state
+	stateUnknownStart := 0
 	return
 }
-statePredictConfi += 1
 state:="unknown"
-if(statePredictConfi>=5){
+if(stateUnknownStart == 0) {
+	stateUnknownStart = A_TickCount
+}
+if(A_TickCount - stateUnknownStart>=2000){
 	statePredict:="unknown"
 }
 Return
@@ -148,15 +152,15 @@ if(statePredict=="unknown" || statePredict=="ready")
 	Gosub, getState
 	tt("state = " statePredict)
 	if(statePredict=="reel") {
-		Click, Down
+		Click
 		SetTimer, test, -40
 	} else{
 		SetTimer, test, -200
 	}
 	Return
 } else if(statePredict=="reel") {
-	Click, Up
 	if(!barY) {
+		Click
 		ImageSearch, _, barY, 0.25*winW, 0, 0.75*winW, 0.3*winH, *20 *TransFuchsia assets\bar.png
 		if(ErrorLevel){
 			barY := 0
@@ -220,6 +224,8 @@ Run, https://github.com/Nigh/Genshin-fishing
 Return
 exit:
 ExitApp
+donothing:
+Return
 
 #If debug
 F5::ExitApp
@@ -244,18 +250,25 @@ updateReady(){
 		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
 		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", verNew)
 		if(verNow1*10000+verNow2*100+verNow3<verNew1*10000+verNew2*100+verNew3) {
-			MsgBox, 0x24, Download, % "Found version " req.responseText ", download?`n发现新版本 " req.responseText " 是否下载?"
+			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?`n`n发现新版本 " req.responseText " 是否下载?"
 			IfMsgBox Yes
 			{
 				UrlDownloadToFile, https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip, ./GenshinFishing.zip
-				MsgBox, % "File saved as GenshinFishing.zip`nGenshinFishing.zip已经下载完成"
+				if(ErrorLevel) {
+					MsgBox, 16,, % "Download failed`n下载失败"
+				} else {
+					MsgBox, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will exit now`n软件即将退出"
+					IniWrite, % A_MM A_DD, setting.ini, update, last
+					ExitApp
+				}
 			}
 		} else {
-			MsgBox, ,, % "It is the latest version`n软件已是最新版本", 2
+			MsgBox, ,, % "It is the latest version`n`n软件已是最新版本", 2
+			IniWrite, % A_MM A_DD, setting.ini, update, last
 		}
-		IniWrite, % A_MM A_DD, setting.ini, update, last
+		
 	} else {
-        MsgBox, 16,, % "Update failed`n更新失败`nStatus=" req.status
+        MsgBox, 16,, % "Update failed`n`n更新失败`n`nStatus=" req.status
 	}
 }
 UAC()
