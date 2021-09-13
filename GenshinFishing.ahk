@@ -10,7 +10,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.0.1"
+version:="0.0.2"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -118,10 +118,11 @@ if(!ErrorLevel){
 }
 state:="unknown"
 if(stateUnknownStart == 0) {
-	stateUnknownStart = A_TickCount
+	stateUnknownStart := A_TickCount
 }
-if(A_TickCount - stateUnknownStart>=2000){
+if(statePredict!="unknown" && A_TickCount - stateUnknownStart>=2000){
 	statePredict:="unknown"
+	Click, Up
 }
 Return
 
@@ -140,7 +141,9 @@ WinGetPos, _, _, winW, winH, ahk_id %genshin_hwnd%
 if(statePredict=="unknown" || statePredict=="ready")
 {
 	Gosub, getState
-	tt("state = " statePredict "`n" winW "," winH)
+	if(statePredict!="unknown"){
+		tt("state = " state "`nstatePredict = " statePredict "`n" winW "," winH)
+	}
 	if(statePredict=="reel"){
 		SetTimer, test, -40
 	} else {
@@ -152,7 +155,7 @@ if(statePredict=="unknown" || statePredict=="ready")
 	Gosub, getState
 	tt("state = " statePredict)
 	if(statePredict=="reel") {
-		Click
+		Click, Down
 		SetTimer, test, -40
 	} else{
 		SetTimer, test, -200
@@ -160,7 +163,6 @@ if(statePredict=="unknown" || statePredict=="ready")
 	Return
 } else if(statePredict=="reel") {
 	if(!barY) {
-		Click
 		ImageSearch, _, barY, 0.25*winW, 0, 0.75*winW, 0.3*winH, *20 *TransFuchsia assets\bar.png
 		if(ErrorLevel){
 			barY := 0
@@ -204,6 +206,8 @@ if(statePredict=="unknown" || statePredict=="ready")
 			}
 			if(curPredictX<(k*rightPredictX + (1-k)*leftPredictX)){
 				Click, Down
+			} else {
+				Click, Up
 			}
 		}
 		DllCall("QueryPerformanceCounter", "Int64P",  endTime)
