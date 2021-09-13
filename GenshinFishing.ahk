@@ -1,19 +1,35 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance, ignore
 #Persistent
-#Include menu.ahk
 
 if A_IsCompiled
 debug:=0
 Else
 debug:=1
 
+version:="0.0.1"
+if A_Args.Length() > 0
+{
+	for n, param in A_Args
+	{
+		RegExMatch(param, "--out=(\w+)", outName)
+		if(outName1=="version") {
+			f := FileOpen("version.txt","w")
+			f.Write(version)
+			f.Close()
+			ExitApp
+		}
+	}
+}
+
+
+#Include menu.ahk
+
 UAC()
 
-version:="0.0.1"
 IniRead, lastUpdate, setting.ini, update, last, 0
 today:=A_MM . A_DD
 if(lastUpdate!=today) {
