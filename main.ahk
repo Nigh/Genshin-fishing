@@ -2,6 +2,20 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+
+full_command_line := DllCall("GetCommandLine", "str")
+if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
+{
+	try
+	{
+		if A_IsCompiled
+			Run *RunAs "%A_ScriptFullPath%" /restart
+		else
+			Run *RunAs "%A_AhkPath%" /restart "%A_ScriptFullPath%"
+	}
+	ExitApp
+}
+
 #Include, Gdip_ImageSearch.ahk
 #Include, Gdip.ahk
 
