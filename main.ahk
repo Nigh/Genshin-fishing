@@ -2,18 +2,25 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+#SingleInstance, ignore
+#Persistent
+#Include menu.ahk
 
-full_command_line := DllCall("GetCommandLine", "str")
-if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
-{
-	try
-	{
-		if A_IsCompiled
-			Run *RunAs "%A_ScriptFullPath%" /restart
-		else
-			Run *RunAs "%A_AhkPath%" /restart "%A_ScriptFullPath%"
-	}
-	ExitApp
+if A_IsCompiled
+debug:=0
+Else
+debug:=1
+
+UAC()
+
+version:="0.0.1"
+IniRead, lastUpdate, setting.ini, update, last, 0
+today:=A_MM . A_DD
+if(lastUpdate!=today) {
+	MsgBox,,Update,Getting Update`n获取最新版本,2
+	update()
+} else {
+	; MsgBox, already updated today
 }
 
 #Include, Gdip_ImageSearch.ahk
@@ -101,7 +108,7 @@ Return
 test:
 genshin_hwnd := genshin_window_exist()
 if(!genshin_hwnd){
-	SetTimer, test, -1000
+	SetTimer, test, -800
 	Return
 }
 if(WinExist("A") != genshin_hwnd)
@@ -118,7 +125,7 @@ if(statePredict=="unknown" || statePredict=="ready")
 		SetTimer, test, -40
 	} else {
 		barY := 0
-		SetTimer, test, -1000
+		SetTimer, test, -800
 	}
 	Return
 } else if(statePredict=="casting") {
@@ -189,5 +196,64 @@ if(statePredict=="unknown" || statePredict=="ready")
 
 Return
 
+donate:
+Run, https://ko-fi.com/xianii
+Return
+pages:
+Run, https://github.com/Nigh/Genshin-fishing
+Return
+exit:
+ExitApp
+
+#If debug
 F5::ExitApp
 F6::Reload
+#If
+
+update(){
+	global
+	req := ComObjCreate("Msxml2.XMLHTTP")
+	; https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt
+	; https://github.com/Nigh/Genshin-fishing/releases/latest/download/version.txt
+	req.open("GET", "https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
+	req.onreadystatechange := Func("updateReady")
+	req.send()
+}
+updateReady(){
+	global req, version
+    if (req.readyState != 4)  ; Not done yet.
+        return
+    if (req.status == 200){ ; OK.
+        ; MsgBox % "Latest version: " req.responseText
+		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
+		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", verNew)
+		if(verNow1*10000+verNow2*100+verNow3<verNew1*10000+verNew2*100+verNew3) {
+			MsgBox, 0x24, Download, % "Found version " req.responseText ", download?`n发现新版本 " req.responseText " 是否下载?"
+			IfMsgBox Yes
+			{
+				UrlDownloadToFile, https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip, ./GenshinFishing.zip
+				MsgBox, % "File saved as GenshinFishing.zip`nGenshinFishing.zip已经下载完成"
+			}
+		} else {
+			MsgBox, ,, % "It is the latest version`n软件已是最新版本", 2
+		}
+		IniWrite, % A_MM A_DD, setting.ini, update, last
+	} else {
+        MsgBox, 16,, % "Update failed`n更新失败`nStatus=" req.status
+	}
+}
+UAC()
+{
+	full_command_line := DllCall("GetCommandLine", "str")
+	if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
+	{
+		try
+		{
+			if A_IsCompiled
+				Run *RunAs "%A_ScriptFullPath%" /restart
+			else
+				Run *RunAs "%A_AhkPath%" /restart "%A_ScriptFullPath%"
+		}
+		ExitApp
+	}
+}
