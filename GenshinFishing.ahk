@@ -163,13 +163,15 @@ if(statePredict=="unknown" || statePredict=="ready")
 	Return
 } else if(statePredict=="reel") {
 	if(!barY) {
-		ImageSearch, _, barY, 0.25*winW, 0, 0.75*winW, 0.3*winH, *20 *TransFuchsia assets\bar.png
+		ImageSearch, _, barY, 0.33*winW, 0, 0.66*winW, 0.3*winH, *20 *TransFuchsia assets\bar.png
 		if(ErrorLevel){
 			barY := 0
+		} else {
+			Click, Up
 		}
 	} else {
 		DllCall("QueryPerformanceCounter", "Int64P",  startTime)
-		ImageSearch, leftX, leftY, 0.25*winW, barY-10, 0.75*winW, barY+30, *16 *TransFuchsia assets\left.png
+		ImageSearch, leftX, leftY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\left.png
 		if(ErrorLevel){
 			leftX := 0
 			leftY := "Null"
@@ -177,7 +179,7 @@ if(statePredict=="unknown" || statePredict=="ready")
 			leftPredictX := 2*leftX - leftXOld
 			leftXOld := leftX
 		}
-		ImageSearch, rightX, rightY, 0.25*winW, barY-10, 0.75*winW, barY+30, *16 *TransFuchsia assets\right.png
+		ImageSearch, rightX, rightY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\right.png
 		if(ErrorLevel){
 			rightX := 0
 			rightY := "Null"
@@ -185,7 +187,7 @@ if(statePredict=="unknown" || statePredict=="ready")
 			rightPredictX := 2*rightX - rightXOld
 			rightXOld := rightX
 		}
-		ImageSearch, curX, curY, 0.25*winW, barY-10, 0.75*winW, barY+30, *16 *TransFuchsia assets\cur.png
+		ImageSearch, curX, curY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\cur.png
 		if(ErrorLevel){
 			curX := 0
 			curY := "Null"
