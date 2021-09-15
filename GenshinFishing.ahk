@@ -11,7 +11,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.0.2"
+version:="0.0.3"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
