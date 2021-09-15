@@ -26,11 +26,16 @@ The following image settings have been tested to work properly:
 | 1360 x 768        | ❌    |
 | 1280 x 720        | ❌    |
 
+### 性能 Performance
+- CPU: AMD R5 3600
+- GPU: GTX1060
 
-
+在以上配置下，目前单帧画面的检测用时为 `25ms`  
+Under the above hardware configuration, the current detection time for a single frame is `25ms`.
 
 ## UpdateLog 更新日志
 
+- `2021.09.15` 性能优化
 - `2021.09.13` 通宵肝出了第一版 Overnight programming came out with the first version
 
 ## Plan 计划
