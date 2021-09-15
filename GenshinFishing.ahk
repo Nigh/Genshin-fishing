@@ -1,4 +1,4 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -168,6 +168,10 @@ if(statePredict=="unknown" || statePredict=="ready")
 			barY := 0
 		} else {
 			Click, Up
+			avrDetectTime:=[]
+			leftX:=0
+			rightX:=0
+			curX:=0
 		}
 	} else {
 		DllCall("QueryPerformanceCounter", "Int64P",  startTime)
@@ -213,8 +217,21 @@ if(statePredict=="unknown" || statePredict=="ready")
 			}
 		}
 		DllCall("QueryPerformanceCounter", "Int64P",  endTime)
-		lastTime := (endTime-startTime)//freq
-		tt("barY = " barY "`n" "leftX = " leftX "`n" "rightX = " rightX "`n" "curX = " curX "`n" "barMove = " (leftX+rightX)-(leftXOld+rightXOld) "`n" state "`n" lastTime "ms")
+
+		detectTime:=(endTime-startTime)//freq
+		if(avrDetectTime.Length()<8){
+			avrDetectTime.Push(detectTime)
+		} else {
+			avrDetectTime.Pop()
+			avrDetectTime.Push(detectTime)
+		}
+		sum := 0
+		For index, value in avrDetectTime
+			sum += value
+		
+		avrDetectMs := sum//avrDetectTime.Length()
+
+		tt("barY = " barY "`n" "leftX = " leftX "`n" "rightX = " rightX "`n" "curX = " curX "`n" "barMove = " (leftX+rightX)-(leftXOld+rightXOld) "`n" state "`n" avrDetectMs "ms")
 	}
 	SetTimer, test, -100
 	Return
