@@ -1,9 +1,10 @@
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance, ignore
 #Persistent
+SetBatchLines, -1
 
 if A_IsCompiled
 debug:=0
@@ -175,7 +176,11 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 	} else {
 		DllCall("QueryPerformanceCounter", "Int64P",  startTime)
-		ImageSearch, leftX, leftY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\left.png
+		if(leftX > 0) {
+			ImageSearch, leftX, leftY, leftX-25, barY-10, leftX+25+12, barY+30, *16 *TransFuchsia assets\left.png
+		} else {
+			ImageSearch, leftX, leftY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\left.png
+		}
 		if(ErrorLevel){
 			leftX := 0
 			leftY := "Null"
@@ -183,7 +188,12 @@ if(statePredict=="unknown" || statePredict=="ready")
 			leftPredictX := 2*leftX - leftXOld
 			leftXOld := leftX
 		}
-		ImageSearch, rightX, rightY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\right.png
+		
+		if(rightX > 0) {
+			ImageSearch, rightX, rightY, rightX-25, barY-10, rightX+25+12, barY+30, *16 *TransFuchsia assets\right.png
+		} else {
+			ImageSearch, rightX, rightY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\right.png
+		}
 		if(ErrorLevel){
 			rightX := 0
 			rightY := "Null"
@@ -191,7 +201,12 @@ if(statePredict=="unknown" || statePredict=="ready")
 			rightPredictX := 2*rightX - rightXOld
 			rightXOld := rightX
 		}
-		ImageSearch, curX, curY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\cur.png
+
+		if(curX > 0) {
+			ImageSearch, curX, curY, curX-50, barY-10, curX+50+11, barY+30, *16 *TransFuchsia assets\cur.png
+		} else {
+			ImageSearch, curX, curY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\cur.png
+		}
 		if(ErrorLevel){
 			curX := 0
 			curY := "Null"
