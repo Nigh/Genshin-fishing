@@ -11,7 +11,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.0.3"
+version:="0.0.4"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -163,6 +163,7 @@ if(statePredict=="unknown" || statePredict=="ready")
 	}
 	Return
 } else if(statePredict=="reel") {
+	DllCall("QueryPerformanceCounter", "Int64P",  startTime)
 	if(!barY) {
 		ImageSearch, _, barY, 0.33*winW, 0, 0.66*winW, 0.3*winH, *20 *TransFuchsia assets\bar.png
 		if(ErrorLevel){
@@ -174,8 +175,8 @@ if(statePredict=="unknown" || statePredict=="ready")
 			rightX:=0
 			curX:=0
 		}
+		DllCall("QueryPerformanceCounter", "Int64P",  endTime)
 	} else {
-		DllCall("QueryPerformanceCounter", "Int64P",  startTime)
 		if(leftX > 0) {
 			ImageSearch, leftX, leftY, leftX-25, barY-10, leftX+25+12, barY+30, *16 *TransFuchsia assets\left.png
 		} else {
@@ -248,7 +249,12 @@ if(statePredict=="unknown" || statePredict=="ready")
 
 		tt("barY = " barY "`n" "leftX = " leftX "`n" "rightX = " rightX "`n" "curX = " curX "`n" "barMove = " (leftX+rightX)-(leftXOld+rightXOld) "`n" state "`n" avrDetectMs "ms")
 	}
-	SetTimer, test, -100
+	lastTime:=(endTime-startTime)//freq
+	if(lastTime>60) {
+		SetTimer, test, -10
+	} else {
+		SetTimer, test, % lastTime-70
+	}
 	Return
 }
 
