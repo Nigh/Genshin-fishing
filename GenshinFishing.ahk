@@ -38,6 +38,7 @@ if(lastUpdate!=today) {
 	update()
 } else {
 	; MsgBox, already updated today
+	ttm("Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动")
 }
 
 #Include, Gdip_ImageSearch.ahk
@@ -62,6 +63,16 @@ statePredict:="unknown"
 stateUnknownStart:=0
 SetTimer, test, -100
 Return
+
+ttm(txt, delay=1500)
+{
+	ToolTip, % txt
+	SetTimer, kttm, % -delay
+	Return
+	kttm:
+	ToolTip,
+	Return
+}
 
 tt(txt, delay=2000)
 {
@@ -301,16 +312,15 @@ updateReady(){
 				if(ErrorLevel) {
 					MsgBox, 16,, % "Download failed`n下载失败"
 				} else {
-					MsgBox, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will exit now`n软件即将退出"
+					MsgBox, ,, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will exit now`n软件即将退出", 2
 					IniWrite, % A_MM A_DD, setting.ini, update, last
 					ExitApp
 				}
 			}
 		} else {
-			MsgBox, ,, % "It is the latest version`n`n软件已是最新版本", 2
+			MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version`n`n软件已是最新版本", 2
 			IniWrite, % A_MM A_DD, setting.ini, update, last
 		}
-		
 	} else {
         MsgBox, 16,, % "Update failed`n`n更新失败`n`nStatus=" req.status
 	}
