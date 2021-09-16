@@ -1,8 +1,8 @@
 # Genshin-fishing
 
-原神自动钓鱼人偶
+原神钓鱼人偶
 
-Genshin impact fishing automation
+Genshin impact fishing automata
 
 ## Usage 用法用量
 **注意**：目前仅支持`1920*1080`分辨率  
@@ -17,14 +17,14 @@ Software update needs to close the software first. If it does not close automati
 以下图像设置已经测试可以正常工作：  
 The following image settings have been tested to work properly:
 
-| 分辨率 Resolution | 结果 |
-| ----------------- | ---- |
-| 1920 x 1080       | ✔    |
-| 1600 x 900        | ❌    |
-| 1440 x 900        | ❌    |
-| 1366 x 768        | ❌    |
-| 1360 x 768        | ❌    |
-| 1280 x 720        | ❌    |
+| 分辨率 Resolution | 支持 Support |
+| ----------------- | ------------ |
+| 1920 x 1080       | ✔            |
+| 1600 x 900        | ❌            |
+| 1440 x 900        | ❌            |
+| 1366 x 768        | ❌            |
+| 1360 x 768        | ❌            |
+| 1280 x 720        | ❌            |
 
 ### 性能 Performance
 - CPU: AMD R5 3600
