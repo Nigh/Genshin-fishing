@@ -6,7 +6,7 @@ Genshin impact fishing automata
 
 ## Video 视频
 - Bilibili(zh-cn): https://www.bilibili.com/video/BV1pq4y1f7V2/
-- Youtube(En): https://www.youtube.com/watch?v=I3SSyZ82Ur4
+- Youtube(En): https://www.youtube.com/watch?v=3lvCEh7quxE
 
 ## Usage 用法用量
 **注意**：目前仅支持`1920*1080`分辨率  
