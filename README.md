@@ -9,9 +9,6 @@ Genshin impact fishing automata
 - Youtube(En): https://www.youtube.com/watch?v=3lvCEh7quxE
 
 ## Usage 用法用量
-**注意**：目前仅支持`1920*1080`分辨率  
-**Note**: Currently only support `1920*1080` resolution
-
 解压到文件夹，直接运行exe即可。  
 Unzip it into a folder and run the exe directly.
 
@@ -24,20 +21,38 @@ The following image settings have been tested to work properly:
 | 分辨率 Resolution | 支持 Support |
 | ----------------- | ------------ |
 | 1920 x 1080       | ✔            |
-| 1600 x 900        | ❌            |
+| 1600 x 900        | ✔            |
 | 1440 x 900        | ❌            |
 | 1366 x 768        | ❌            |
 | 1360 x 768        | ❌            |
-| 1280 x 720        | ❌            |
+| 1280 x 720        | ✔            |
+
+### Setting.ini
+
+Tooltip messages are turned off by default, specify `debug=1` in `setting.ini` to turn on
+
+提示信息默认关闭，在`setting.ini`中指定`debug=1`开启
+
+specify `log=1` or `log=2` in `setting.ini` to start logs with different levels of detail and save them in the genshinfishing.log file
+
+在`setting.ini`中指定`log=1`或`log=2`启动不同详细程度的log，保存在genshinfishing.log文件中
+
+You can turn off automatic updates by specifying `autoupdate=0` in `setting.ini`
+
+在`setting.ini`中可以指定`autoupdate=0`来关闭自动更新
 
 ### 性能 Performance
+
 - CPU: AMD R5 3600
 - GPU: GTX1060
+- Res: `1920`x`1080`
 
 在以上配置下，目前单帧画面的检测用时为 `25ms`  
 Under the above hardware configuration, the current detection time for a single frame is `25ms`.
 
 ## UpdateLog 更新日志
+
+- `2021.09.20` 增加适配分辨率和可配置项
 
 - `2021.09.15` 性能优化
 - `2021.09.13` 通宵肝出了第一版 Overnight programming came out with the first version
