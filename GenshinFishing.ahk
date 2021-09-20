@@ -6,12 +6,29 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #Persistent
 SetBatchLines, -1
 
+update_log:="
+(
+Add resolution support below
+新增分辨率支持如下
+1280x720
+1600x900
+
+Tooltip messages are turned off by default, specify debug=1 in setting.ini to turn on
+提示信息默认关闭，在setting.ini中指定debug=1开启
+
+Add logs, specify log=1 or log=2 in setting.ini to start logs with different levels of detail and save them in the genshinfishing.log file
+增加log，在setting.ini中指定log=1或log=2启动不同详细程度的log，保存在genshinfishing.log文件中
+
+You can turn off automatic updates by specifying autoupdate=0 in setting.ini
+在setting.ini中可以指定autoupdate=0来关闭自动更新
+)"
+
 if A_IsCompiled
 debug:=0
 Else
 debug:=1
 
-version:="0.0.4"
+version:="0.1.0"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -31,14 +48,29 @@ if A_Args.Length() > 0
 
 UAC()
 
+IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
+IniRead, autoUpdate, setting.ini, update, autoupdate, 1
+IniRead, debugmode, setting.ini, update, debug, 0
+Gosub, log_init
+log("Start at " A_YYYY "-" A_MM "-" A_DD)
 today:=A_MM . A_DD
-if(lastUpdate!=today) {
-	MsgBox,,Update,Getting Update`n获取最新版本,2
-	update()
+if(autoUpdate) {
+	if(lastUpdate!=today) {
+		log("Getting Update",0)
+		MsgBox,,Update,Getting Update`n获取最新版本,2
+		update()
+	} else {
+		IniRead, version_str, setting.ini, update, ver, "0"
+		if(version_str!=version) {
+			IniWrite, % version, setting.ini, update, ver
+			MsgBox, % version "`nUpdate log`n更新日志`n`n" update_log
+		}
+		ttm("Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动")
+	}
 } else {
-	; MsgBox, already updated today
-	ttm("Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动")
+	log("Update Skiped",0)
+	MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
 }
 
 #Include, Gdip_ImageSearch.ahk
@@ -46,8 +78,45 @@ if(lastUpdate!=today) {
 
 pToken := Gdip_Startup()
 
+img_list:=Object("bar",Object("filename","bar.png")
+,"casting",Object("filename","casting.png")
+,"cur",Object("filename","cur.png")
+,"left",Object("filename","left.png")
+,"ready",Object("filename","ready.png")
+,"reel",Object("filename","reel.png")
+,"right",Object("filename","right.png"))
+; for k, v in img_list
+; {
+; 	pBitmap := Gdip_CreateBitmapFromFile( v.path )
+; 	v.w:= Gdip_GetImageWidth( pBitmap )
+; 	v.h:= Gdip_GetImageHeight( pBitmap )
+; 	Gdip_DisposeImage( pBitmap )
+; 	msgbox, % k "`n" v.path "`nw[" v.w "]`nh[" v.h "]"
+; }
+
 DllCall("QueryPerformanceFrequency", "Int64P", freq)
 freq/=1000
+CoordMode, Pixel, Client
+state:="unknown"
+statePredict:="unknown"
+stateUnknownStart:=0
+isResolutionValid:=0
+OnExit, exit
+SetTimer, main, -100
+Return
+
+log_init:
+pLogfile:=FileOpen("genshinfishing.log", "a")
+Return
+
+log(txt,level=0)
+{
+	global logLevel, pLogfile
+	if(logLevel >= level) {
+		pLogfile.WriteLine(A_Hour ":" A_Min ":" A_Sec "." A_MSec "[" level "]:" txt)
+	}
+}
+
 genshin_window_exist()
 {
 	genshinHwnd := WinExist("ahk_exe GenshinImpact.exe")
@@ -57,12 +126,6 @@ genshin_window_exist()
 	}
 	return genshinHwnd
 }
-CoordMode, Pixel, Client
-state:="unknown"
-statePredict:="unknown"
-stateUnknownStart:=0
-SetTimer, test, -100
-Return
 
 ttm(txt, delay=1500)
 {
@@ -106,26 +169,38 @@ if(genshin_hwnd)
 	; Gdip_SetBitmapToClipboard
 }
 
+getClientSize(hWnd, ByRef w := "", ByRef h := "")
+{
+	VarSetCapacity(rect, 16, 0)
+	DllCall("GetClientRect", "ptr", hWnd, "ptr", &rect)
+	w := NumGet(rect, 8, "int")
+	h := NumGet(rect, 12, "int")
+}
+
 getState:
-ImageSearch, X, Y, winW*0.825, winH*0.875, winW, winH, *32 *TransFuchsia assets\ready.png
+; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
+ImageSearch, X, Y, winW-winH*0.34, winH*0.85, winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
 	state:="ready"
 	statePredict:=state
 	stateUnknownStart := 0
+	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, X, Y, winW*0.825, winH*0.875, winW, winH, *32 *TransFuchsia assets\reel.png
+ImageSearch, X, Y, winW-winH*0.34, winH*0.85, winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
 	state:="reel"
 	statePredict:=state
 	stateUnknownStart := 0
+	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, X, Y, winW*0.825, winH*0.875, winW, winH, *32 *TransFuchsia assets\casting.png
+ImageSearch, X, Y, winW-winH*0.34, winH*0.85, winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
 	state:="casting"
 	statePredict:=state
 	stateUnknownStart := 0
+	log("state->" statePredict, 1)
 	return
 }
 state:="unknown"
@@ -134,49 +209,80 @@ if(stateUnknownStart == 0) {
 }
 if(statePredict!="unknown" && A_TickCount - stateUnknownStart>=2000){
 	statePredict:="unknown"
-	Click, Up
+	; Click, Up
+	log("state->" statePredict, 1)
 }
 Return
 
-test:
+main:
 genshin_hwnd := genshin_window_exist()
 if(!genshin_hwnd){
-	SetTimer, test, -800
+	SetTimer, main, -800
 	Return
 }
 if(WinExist("A") != genshin_hwnd)
 {
-	SetTimer, test, -500
+	SetTimer, main, -500
 	Return
 }
-WinGetPos, _, _, winW, winH, ahk_id %genshin_hwnd%
+getClientSize(genshin_hwnd, winW, winH)
+
+if(oldWinW!=winW || oldWinH!=winH) {
+	log("Get dimension=" winW "x" winH,1)
+	if(InStr(FileExist("./assets/" winW winH), "D")) {
+		fileCount:=0
+		for k, v in img_list
+		{
+			if(FileExist("./assets/" winW winH "/" v.filename)) {
+				fileCount += 1
+			}
+		}
+		if(fileCount < img_list.Count()) {
+			isResolutionValid:=0
+		} else {
+			isResolutionValid:=1
+		}
+	} else {
+		isResolutionValid:=0
+	}
+}
+oldWinW:=winW
+oldWinH:=winH
+if(!isResolutionValid) {
+	tt("Unsupported resolution`n不支持的分辨率`n" winW "x" winH)
+	SetTimer, main, -800
+	Return
+}
+
 if(statePredict=="unknown" || statePredict=="ready")
 {
 	Gosub, getState
-	if(statePredict!="unknown"){
+	if(statePredict!="unknown" && debugmode){
 		tt("state = " state "`nstatePredict = " statePredict "`n" winW "," winH)
 	}
 	if(statePredict=="reel"){
-		SetTimer, test, -40
+		SetTimer, main, -40
 	} else {
 		barY := 0
-		SetTimer, test, -800
+		SetTimer, main, -800
 	}
 	Return
 } else if(statePredict=="casting") {
 	Gosub, getState
-	tt("state = " statePredict)
+	if(debugmode){
+		tt("state = " statePredict)
+	}
 	if(statePredict=="reel") {
 		Click, Down
-		SetTimer, test, -40
+		SetTimer, main, -40
 	} else{
-		SetTimer, test, -200
+		SetTimer, main, -200
 	}
 	Return
 } else if(statePredict=="reel") {
 	DllCall("QueryPerformanceCounter", "Int64P",  startTime)
 	if(!barY) {
-		ImageSearch, _, barY, 0.33*winW, 0, 0.66*winW, 0.3*winH, *20 *TransFuchsia assets\bar.png
+		ImageSearch, _, barY, 0.33*winW, 0, 0.66*winW, 0.3*winH, % "*20 *TransFuchsia ./assets/" winW winH "/" img_list.bar.filename
 		if(ErrorLevel){
 			barY := 0
 		} else {
@@ -185,13 +291,14 @@ if(statePredict=="unknown" || statePredict=="ready")
 			leftX:=0
 			rightX:=0
 			curX:=0
+			log("get barY=" barY,2)
 		}
 		DllCall("QueryPerformanceCounter", "Int64P",  endTime)
 	} else {
 		if(leftX > 0) {
-			ImageSearch, leftX, leftY, leftX-25, barY-10, leftX+25+12, barY+30, *16 *TransFuchsia assets\left.png
+			ImageSearch, leftX, leftY, leftX-25, barY-10, leftX+25+12, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
 		} else {
-			ImageSearch, leftX, leftY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\left.png
+			ImageSearch, leftX, leftY, 0.33*winW, barY-10, 0.66*winW, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
 		}
 		if(ErrorLevel){
 			leftX := 0
@@ -202,9 +309,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 		
 		if(rightX > 0) {
-			ImageSearch, rightX, rightY, rightX-25, barY-10, rightX+25+12, barY+30, *16 *TransFuchsia assets\right.png
+			ImageSearch, rightX, rightY, rightX-25, barY-10, rightX+25+12, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
 		} else {
-			ImageSearch, rightX, rightY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\right.png
+			ImageSearch, rightX, rightY, 0.33*winW, barY-10, 0.66*winW, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
 		}
 		if(ErrorLevel){
 			rightX := 0
@@ -215,9 +322,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 
 		if(curX > 0) {
-			ImageSearch, curX, curY, curX-50, barY-10, curX+50+11, barY+30, *16 *TransFuchsia assets\cur.png
+			ImageSearch, curX, curY, curX-50, barY-10, curX+50+11, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
 		} else {
-			ImageSearch, curX, curY, 0.33*winW, barY-10, 0.66*winW, barY+30, *16 *TransFuchsia assets\cur.png
+			ImageSearch, curX, curY, 0.33*winW, barY-10, 0.66*winW, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
 		}
 		if(ErrorLevel){
 			curX := 0
@@ -255,16 +362,19 @@ if(statePredict=="unknown" || statePredict=="ready")
 		sum := 0
 		For index, value in avrDetectTime
 			sum += value
-		
+
 		avrDetectMs := sum//avrDetectTime.Length()
 
-		tt("barY = " barY "`n" "leftX = " leftX "`n" "rightX = " rightX "`n" "curX = " curX "`n" "barMove = " (leftX+rightX)-(leftXOld+rightXOld) "`n" state "`n" avrDetectMs "ms")
+		log("dt=" detectTime "ms`tleftX="leftX "`trightX="rightX "`t" "curX="curX "`tleftXpre="leftPredictX "`trightXpre="rightPredictX "`tcurXpre="curPredictX,2)
+		if(debugmode){
+			tt("barY = " barY "`n" "leftX = " leftX "`n" "rightX = " rightX "`n" "curX = " curX "`n" "barMove = " (leftX+rightX)-(leftXOld+rightXOld) "`n" state "`n" avrDetectMs "ms")
+		}
 	}
 	lastTime:=(endTime-startTime)//freq
 	if(lastTime>60) {
-		SetTimer, test, -10
+		SetTimer, main, -10
 	} else {
-		SetTimer, test, % lastTime-70
+		SetTimer, main, % lastTime-70
 	}
 	Return
 }
@@ -278,6 +388,7 @@ pages:
 Run, https://github.com/Nigh/Genshin-fishing
 Return
 exit:
+pLogfile.Close()
 ExitApp
 donothing:
 Return
@@ -289,7 +400,7 @@ F6::Reload
 
 update(){
 	global
-	req := ComObjCreate("Msxml2.XMLHTTP")
+	req := ComObjCreate("Msxml2.XMLHTTP.6.0")
 	; https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt
 	; https://github.com/Nigh/Genshin-fishing/releases/latest/download/version.txt
 	req.open("GET", "https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)

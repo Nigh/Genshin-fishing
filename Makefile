@@ -9,7 +9,7 @@
 default: dist
 
 GenshinFishing.exe:
-	ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /icon icon.ico /mpress 1
+	ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /icon icon.ico /compress 1
 version.txt:
 	autohotkey.exe .\GenshinFishing.ahk --out=version
 
