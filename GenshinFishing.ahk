@@ -400,17 +400,28 @@ F6::Reload
 
 update(){
 	global
-	req := ComObjCreate("Msxml2.XMLHTTP.6.0")
+	req := ComObjCreate("MSXML2.ServerXMLHTTP")
 	; https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt
 	; https://github.com/Nigh/Genshin-fishing/releases/latest/download/version.txt
 	req.open("GET", "https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
 	req.onreadystatechange := Func("updateReady")
 	req.send()
 }
+
+; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
+updateReqDone:=0
 updateReady(){
-	global req, version
-    if (req.readyState != 4)  ; Not done yet.
+	global req, version, updateReqDone
+	log("update req.readyState=" req.readyState, 1)
+    if (req.readyState != 4){  ; Not done yet.
         return
+	}
+	if(updateReqDone){
+		log("state already changed", 1)
+		Return
+	}
+	updateReqDone := 1
+	log("update req.status=" req.status, 1)
     if (req.status == 200){ ; OK.
         ; MsgBox % "Latest version: " req.responseText
 		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
@@ -436,6 +447,7 @@ updateReady(){
         MsgBox, 16,, % "Update failed`n`n更新失败`n`nStatus=" req.status
 	}
 }
+
 UAC()
 {
 	full_command_line := DllCall("GetCommandLine", "str")
