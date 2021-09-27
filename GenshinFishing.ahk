@@ -8,19 +8,19 @@ SetBatchLines, -1
 
 update_log:="
 (
-Add resolution support below
-新增分辨率支持如下
+Update Log
+更新日志
+> 增加了3840x2160分辨率支持
+> Added support for 3840x2160 resolution
+> 更改了MSXML2方法, 应该能解决一些升级报错的问题
+> Changed MSXML2 method, should solve some upgrade issues
+
+Resolution support below
+当前版本分辨率支持如下
 1280x720
 1600x900
-
-Tooltip messages are turned off by default, specify debug=1 in setting.ini to turn on
-提示信息默认关闭，在setting.ini中指定debug=1开启
-
-Add logs, specify log=1 or log=2 in setting.ini to start logs with different levels of detail and save them in the genshinfishing.log file
-增加log，在setting.ini中指定log=1或log=2启动不同详细程度的log，保存在genshinfishing.log文件中
-
-You can turn off automatic updates by specifying autoupdate=0 in setting.ini
-在setting.ini中可以指定autoupdate=0来关闭自动更新
+1920x1080
+3840x2160
 )"
 
 if A_IsCompiled
@@ -28,7 +28,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.1.0"
+version:="0.1.1"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
