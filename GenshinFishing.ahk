@@ -8,19 +8,19 @@ SetBatchLines, -1
 
 update_log:="
 (
-Add resolution support below
-新增分辨率支持如下
+Update Log
+更新日志
+> 增加了3840x2160分辨率支持
+> Added support for 3840x2160 resolution
+> 更改了MSXML2方法, 应该能解决一些升级报错的问题
+> Changed MSXML2 method, should solve some upgrade issues
+
+Resolution support below
+当前版本分辨率支持如下
 1280x720
 1600x900
-
-Tooltip messages are turned off by default, specify debug=1 in setting.ini to turn on
-提示信息默认关闭，在setting.ini中指定debug=1开启
-
-Add logs, specify log=1 or log=2 in setting.ini to start logs with different levels of detail and save them in the genshinfishing.log file
-增加log，在setting.ini中指定log=1或log=2启动不同详细程度的log，保存在genshinfishing.log文件中
-
-You can turn off automatic updates by specifying autoupdate=0 in setting.ini
-在setting.ini中可以指定autoupdate=0来关闭自动更新
+1920x1080
+3840x2160
 )"
 
 if A_IsCompiled
@@ -28,7 +28,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.1.0"
+version:="0.1.1"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -177,9 +177,15 @@ getClientSize(hWnd, ByRef w := "", ByRef h := "")
 	h := NumGet(rect, 12, "int")
 }
 
+dLinePt(p)
+{
+	global dLine
+	return Ceil(p*dLine)
+}
+
 getState:
 ; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
-ImageSearch, X, Y, winW-winH*0.34, winH*0.85, winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.ready.filename
+ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
 	state:="ready"
 	statePredict:=state
@@ -187,7 +193,7 @@ if(!ErrorLevel){
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, X, Y, winW-winH*0.34, winH*0.85, winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.reel.filename
+ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
 	state:="reel"
 	statePredict:=state
@@ -195,7 +201,7 @@ if(!ErrorLevel){
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, X, Y, winW-winH*0.34, winH*0.85, winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.casting.filename
+ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
 	state:="casting"
 	statePredict:=state
@@ -241,6 +247,19 @@ if(oldWinW!=winW || oldWinH!=winH) {
 			isResolutionValid:=0
 		} else {
 			isResolutionValid:=1
+			dline:=Ceil(((winW**2)+(winH**2))**0.5)
+			barR_left:=dLinePt(0.27)
+			barR_top:=dLinePt(0.03)
+			barR_right:=dLinePt(0.59)
+			barR_bottom:=dLinePt(0.1)
+			
+			delta_left:=dLinePt(0.025)
+			delta_top:=dLinePt(0.005)
+			delta_right:=dLinePt(0.035)
+			delta_bottom:=dLinePt(0.014)
+
+			barS_left:=dLinePt(0.22)
+			barS_right:=dLinePt(0.64)
 		}
 	} else {
 		isResolutionValid:=0
@@ -281,10 +300,16 @@ if(statePredict=="unknown" || statePredict=="ready")
 	Return
 } else if(statePredict=="reel") {
 	DllCall("QueryPerformanceCounter", "Int64P",  startTime)
-	if(!barY) {
-		ImageSearch, _, barY, 0.33*winW, 0, 0.66*winW, 0.3*winH, % "*20 *TransFuchsia ./assets/" winW winH "/" img_list.bar.filename
+	if(barY<2) {
+		ImageSearch, _, barY, barR_left, barR_top, barR_right, barR_bottom, % "*20 *TransFuchsia ./assets/" winW winH "/" img_list.bar.filename
 		if(ErrorLevel){
-			barY := 0
+			if(barY == 0) {
+				barY := 1
+				Click, Down
+			} else if(barY == 1) {
+				barY := 0
+				Click, Up
+			}
 		} else {
 			Click, Up
 			avrDetectTime:=[]
@@ -296,9 +321,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		DllCall("QueryPerformanceCounter", "Int64P",  endTime)
 	} else {
 		if(leftX > 0) {
-			ImageSearch, leftX, leftY, leftX-25, barY-10, leftX+25+12, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
+			ImageSearch, leftX, leftY, leftX-delta_left, barY-delta_top, leftX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
 		} else {
-			ImageSearch, leftX, leftY, 0.33*winW, barY-10, 0.66*winW, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
+			ImageSearch, leftX, leftY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
 		}
 		if(ErrorLevel){
 			leftX := 0
@@ -309,9 +334,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 		
 		if(rightX > 0) {
-			ImageSearch, rightX, rightY, rightX-25, barY-10, rightX+25+12, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
+			ImageSearch, rightX, rightY, rightX-delta_left, barY-delta_top, rightX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
 		} else {
-			ImageSearch, rightX, rightY, 0.33*winW, barY-10, 0.66*winW, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
+			ImageSearch, rightX, rightY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
 		}
 		if(ErrorLevel){
 			rightX := 0
@@ -322,9 +347,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 
 		if(curX > 0) {
-			ImageSearch, curX, curY, curX-50, barY-10, curX+50+11, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
+			ImageSearch, curX, curY, curX-delta_left, barY-delta_top, curX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
 		} else {
-			ImageSearch, curX, curY, 0.33*winW, barY-10, 0.66*winW, barY+30, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
+			ImageSearch, curX, curY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
 		}
 		if(ErrorLevel){
 			curX := 0
