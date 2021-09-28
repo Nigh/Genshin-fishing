@@ -1,12 +1,11 @@
-# Genshin-fishing
+![](logo.png)
 
-原神钓鱼人偶
-
-Genshin impact fishing automata
+**原神钓鱼自动人偶**  
+**Genshin Impact Fishing Automata**
 
 ## Video 视频
-- Bilibili(Zh): https://www.bilibili.com/video/BV1pq4y1f7V2/
-- Youtube(En): https://www.youtube.com/watch?v=3lvCEh7quxE
+- Bilibili (Zh): https://www.bilibili.com/video/BV1pq4y1f7V2/
+- Youtube (En): https://www.youtube.com/watch?v=3lvCEh7quxE
 
 ## Usage 用法用量
 解压到文件夹，直接运行exe即可。  
@@ -27,6 +26,9 @@ The following image settings have been tested to work properly:
 | 1366 x 768        | ❌            |
 | 1360 x 768        | ❌            |
 | 1280 x 720        | ✔            |
+
+如果需要更多的分辨率支持，请提交issue。  
+If you need more resolutions support, please submit an issue.
 
 ### Setting.ini
 
