@@ -5,7 +5,7 @@
 Genshin impact fishing automata
 
 ## Video 视频
-- Bilibili(zh-cn): https://www.bilibili.com/video/BV1pq4y1f7V2/
+- Bilibili(Zh): https://www.bilibili.com/video/BV1pq4y1f7V2/
 - Youtube(En): https://www.youtube.com/watch?v=3lvCEh7quxE
 
 ## Usage 用法用量
@@ -20,6 +20,7 @@ The following image settings have been tested to work properly:
 
 | 分辨率 Resolution | 支持 Support |
 | ----------------- | ------------ |
+| 3840 x 2160       | ✔            |
 | 1920 x 1080       | ✔            |
 | 1600 x 900        | ✔            |
 | 1440 x 900        | ❌            |
@@ -52,8 +53,8 @@ Under the above hardware configuration, the current detection time for a single 
 
 ## UpdateLog 更新日志
 
+- `2021.09.26` 增加 4k 分辨率适配，优化逻辑
 - `2021.09.20` 增加适配分辨率和可配置项
-
 - `2021.09.15` 性能优化
 - `2021.09.13` 通宵肝出了第一版 Overnight programming came out with the first version
 
