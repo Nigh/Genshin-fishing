@@ -7,6 +7,10 @@
 - Bilibili (Zh): https://www.bilibili.com/video/BV1pq4y1f7V2/
 - Youtube (En): https://www.youtube.com/watch?v=3lvCEh7quxE
 
+## Communities 社群
+- 中国大陆: https://kaihei.co/IWXRLp
+- Discord: https://discord.gg/5PCebykNaC
+
 ## Usage 用法用量
 解压到文件夹，直接运行exe即可。  
 Unzip it into a folder and run the exe directly.
