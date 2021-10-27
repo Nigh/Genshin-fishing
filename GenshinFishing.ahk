@@ -8,19 +8,14 @@ SetBatchLines, -1
 
 update_log:="
 (
-Update Log
-更新日志
-> 增加了3840x2160分辨率支持
-> Added support for 3840x2160 resolution
-> 更改了MSXML2方法, 应该能解决一些升级报错的问题
-> Changed MSXML2 method, should solve some upgrade issues
 
-Resolution support below
-当前版本分辨率支持如下
-1280x720
-1600x900
-1920x1080
-3840x2160
+> 增加了 2560x1440 分辨率支持
+> Added support for 2560x1440 resolution
+> 将资源打包至二进制
+> Package resources to exe
+> 优化了自动升级功能
+> Optimised the automatic upgrade function
+
 )"
 
 if A_IsCompiled
@@ -28,7 +23,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.1.1"
+version:="0.2.0"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -51,14 +46,19 @@ UAC()
 IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
 IniRead, autoUpdate, setting.ini, update, autoupdate, 1
+IniRead, updateMirror, setting.ini, update, mirror, "fastgit"
+IniWrite, % updateMirror, setting.ini, update, mirror
 IniRead, debugmode, setting.ini, update, debug, 0
 Gosub, log_init
 log("Start at " A_YYYY "-" A_MM "-" A_DD)
 today:=A_MM . A_DD
+IfExist, updater.exe
+{
+	FileDelete, updater.exe
+}
 if(autoUpdate) {
 	if(lastUpdate!=today) {
 		log("Getting Update",0)
-		MsgBox,,Update,Getting Update`n获取最新版本,2
 		update()
 	} else {
 		IniRead, version_str, setting.ini, update, ver, "0"
@@ -70,13 +70,8 @@ if(autoUpdate) {
 	}
 } else {
 	log("Update Skiped",0)
-	MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
+	; MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
 }
-
-#Include, Gdip_ImageSearch.ahk
-#Include, Gdip.ahk
-
-pToken := Gdip_Startup()
 
 img_list:=Object("bar",Object("filename","bar.png")
 ,"casting",Object("filename","casting.png")
@@ -93,6 +88,13 @@ img_list:=Object("bar",Object("filename","bar.png")
 ; 	Gdip_DisposeImage( pBitmap )
 ; 	msgbox, % k "`n" v.path "`nw[" v.w "]`nh[" v.h "]"
 ; }
+
+; #Include, Gdip_ImageSearch.ahk
+; #Include, Gdip.ahk
+; pToken := Gdip_Startup()
+
+#include, fileinstalls.ahk
+
 
 DllCall("QueryPerformanceFrequency", "Int64P", freq)
 freq/=1000
@@ -162,8 +164,8 @@ if(genshin_hwnd)
 	; Gdip_SaveBitmapToFile(pBitmap, "output.jpg")
 	; MsgBox, DONE
 
-	hdc := GetDC(genshin_hwnd)
-	CreateCompatibleDC(hdc)
+	; hdc := GetDC(genshin_hwnd)
+	; CreateCompatibleDC(hdc)
 	; Gdip_GraphicsFromHDC
 	; Gdip_CreateBitmapFromHBITMAP
 	; Gdip_SetBitmapToClipboard
@@ -185,7 +187,7 @@ dLinePt(p)
 
 getState:
 ; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
-ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.ready.filename
+ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
 	state:="ready"
 	statePredict:=state
@@ -193,7 +195,7 @@ if(!ErrorLevel){
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.reel.filename
+ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
 	state:="reel"
 	statePredict:=state
@@ -201,7 +203,7 @@ if(!ErrorLevel){
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia ./assets/" winW winH "/" img_list.casting.filename
+ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
 	state:="casting"
 	statePredict:=state
@@ -235,11 +237,11 @@ getClientSize(genshin_hwnd, winW, winH)
 
 if(oldWinW!=winW || oldWinH!=winH) {
 	log("Get dimension=" winW "x" winH,1)
-	if(InStr(FileExist("./assets/" winW winH), "D")) {
+	if(InStr(FileExist(A_Temp "/genshinfishing/" winW winH), "D")) {
 		fileCount:=0
 		for k, v in img_list
 		{
-			if(FileExist("./assets/" winW winH "/" v.filename)) {
+			if(FileExist(A_Temp "/genshinfishing/" winW winH "/" v.filename)) {
 				fileCount += 1
 			}
 		}
@@ -301,7 +303,7 @@ if(statePredict=="unknown" || statePredict=="ready")
 } else if(statePredict=="reel") {
 	DllCall("QueryPerformanceCounter", "Int64P",  startTime)
 	if(barY<2) {
-		ImageSearch, _, barY, barR_left, barR_top, barR_right, barR_bottom, % "*20 *TransFuchsia ./assets/" winW winH "/" img_list.bar.filename
+		ImageSearch, _, barY, barR_left, barR_top, barR_right, barR_bottom, % "*20 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.bar.filename
 		if(ErrorLevel){
 			if(barY == 0) {
 				barY := 1
@@ -321,9 +323,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		DllCall("QueryPerformanceCounter", "Int64P",  endTime)
 	} else {
 		if(leftX > 0) {
-			ImageSearch, leftX, leftY, leftX-delta_left, barY-delta_top, leftX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
+			ImageSearch, leftX, leftY, leftX-delta_left, barY-delta_top, leftX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.left.filename
 		} else {
-			ImageSearch, leftX, leftY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.left.filename
+			ImageSearch, leftX, leftY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.left.filename
 		}
 		if(ErrorLevel){
 			leftX := 0
@@ -334,9 +336,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 		
 		if(rightX > 0) {
-			ImageSearch, rightX, rightY, rightX-delta_left, barY-delta_top, rightX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
+			ImageSearch, rightX, rightY, rightX-delta_left, barY-delta_top, rightX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.right.filename
 		} else {
-			ImageSearch, rightX, rightY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.right.filename
+			ImageSearch, rightX, rightY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.right.filename
 		}
 		if(ErrorLevel){
 			rightX := 0
@@ -347,9 +349,9 @@ if(statePredict=="unknown" || statePredict=="ready")
 		}
 
 		if(curX > 0) {
-			ImageSearch, curX, curY, curX-delta_left, barY-delta_top, curX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
+			ImageSearch, curX, curY, curX-delta_left, barY-delta_top, curX+delta_right, barY+delta_bottom, % "*16 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.cur.filename
 		} else {
-			ImageSearch, curX, curY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia ./assets/" winW winH "/" img_list.cur.filename
+			ImageSearch, curX, curY, barS_left, barY-delta_top, barS_right, barY+delta_bottom, % "*16 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.cur.filename
 		}
 		if(ErrorLevel){
 			curX := 0
@@ -423,12 +425,19 @@ F5::ExitApp
 F6::Reload
 #If
 
+updateSite:=""
+
 update(){
 	global
 	req := ComObjCreate("MSXML2.ServerXMLHTTP")
-	; https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt
-	; https://github.com/Nigh/Genshin-fishing/releases/latest/download/version.txt
-	req.open("GET", "https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
+	if(updateMirror=="fastgit") {
+		updateSite:="https://download.fastgit.org"
+	} else if(updateMirror=="cnpmjs") {
+		updateSite:="https://github.com.cnpmjs.org"
+	} else {
+		updateSite:="https://github.com"
+	}
+	req.open("GET", updateSite "/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
 	req.onreadystatechange := Func("updateReady")
 	req.send()
 }
@@ -436,7 +445,7 @@ update(){
 ; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
 updateReqDone:=0
 updateReady(){
-	global req, version, updateReqDone
+	global req, version, updateReqDone, updateSite
 	log("update req.readyState=" req.readyState, 1)
     if (req.readyState != 4){  ; Not done yet.
         return
@@ -455,17 +464,20 @@ updateReady(){
 			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?`n`n发现新版本 " req.responseText " 是否下载?"
 			IfMsgBox Yes
 			{
-				UrlDownloadToFile, https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip, ./GenshinFishing.zip
+				UrlDownloadToFile, % updateSite "/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip", ./GenshinFishing.zip
 				if(ErrorLevel) {
-					MsgBox, 16,, % "Download failed`n下载失败"
+					log("Err[" ErrorLevel "]Download failed", 0)
+					MsgBox, 16,, % "Err" ErrorLevel "`n`nDownload failed`n下载失败"
 				} else {
-					MsgBox, ,, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will exit now`n软件即将退出", 2
+					MsgBox, ,, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will restart now`n软件即将重启", 3
 					IniWrite, % A_MM A_DD, setting.ini, update, last
+					FileInstall, updater.exe, updater.exe, 1
+					Run, updater.exe
 					ExitApp
 				}
 			}
 		} else {
-			MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version`n`n软件已是最新版本", 2
+			; MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version`n`n软件已是最新版本", 2
 			IniWrite, % A_MM A_DD, setting.ini, update, last
 		}
 	} else {
