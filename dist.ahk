@@ -1,7 +1,6 @@
 ; # dependency:
 ; # autohotkey in PATH
 ; # ahk2exe in PATH
-; # 7z in PATH
 ; # mpress in ahk2exe path
 
 #SingleInstance, Force
@@ -58,10 +57,10 @@ If (ErrorLevel)
 	MsgBox, % "ERROR CODE=" ErrorLevel
 	ExitApp
 }
-RunWait, 7z a -r GenshinFishing.zip .\GenshinFishing.exe
+RunWait, powershell -command "Compress-Archive -Path .\GenshinFishing.exe -DestinationPath GenshinFishing.zip",, Hide
 If (ErrorLevel)
 {
-	MsgBox, % "ERROR CODE=" ErrorLevel
+	MsgBox, % "compress`nERROR CODE=" ErrorLevel
 	ExitApp
 }
 FileDelete, GenshinFishing.exe
