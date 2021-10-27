@@ -49,6 +49,10 @@ You can turn off automatic updates by specifying `autoupdate=0` in `setting.ini`
 
 在`setting.ini`中可以指定`autoupdate=0`来关闭自动更新
 
+specify `mirror=0` to get update from github.com, or `mirror=fastgit`(default) from fastgit.org
+
+中国大陆用户在升级频繁失败时，可以尝试指定 `mirror=cnpmjs` 更换升级源。
+
 ### 性能 Performance
 
 - CPU: AMD R5 3600
@@ -57,16 +61,3 @@ You can turn off automatic updates by specifying `autoupdate=0` in `setting.ini`
 
 在以上配置下，目前单帧画面的检测用时为 `25ms`  
 Under the above hardware configuration, the current detection time for a single frame is `25ms`.
-
-## UpdateLog 更新日志
-
-- `2021.09.26` 增加 4k 分辨率适配，优化逻辑
-- `2021.09.20` 增加适配分辨率和可配置项
-- `2021.09.15` 性能优化
-- `2021.09.13` 通宵肝出了第一版 Overnight programming came out with the first version
-
-## Plan 计划
-TODO:  
-   - 使用GDIP方法截图找图
-   - 增加更多适配的分辨率
-
