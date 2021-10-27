@@ -8,19 +8,12 @@ SetBatchLines, -1
 
 update_log:="
 (
-Update Log
-更新日志
-> 增加了3840x2160分辨率支持
-> Added support for 3840x2160 resolution
-> 更改了MSXML2方法, 应该能解决一些升级报错的问题
-> Changed MSXML2 method, should solve some upgrade issues
 
-Resolution support below
-当前版本分辨率支持如下
-1280x720
-1600x900
-1920x1080
-3840x2160
+> 增加了 2560x1440 分辨率支持
+> Added support for 2560x1440 resolution
+> 将资源打包至二进制
+> Package resources to exe
+
 )"
 
 if A_IsCompiled
@@ -28,7 +21,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.1.1"
+version:="0.1.2"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
