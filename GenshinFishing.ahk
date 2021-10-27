@@ -1,4 +1,4 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -44,6 +44,8 @@ UAC()
 IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
 IniRead, autoUpdate, setting.ini, update, autoupdate, 1
+IniRead, updateMirror, setting.ini, update, mirror, "fastgit"
+IniWrite, % updateMirror, setting.ini, update, mirror
 IniRead, debugmode, setting.ini, update, debug, 0
 Gosub, log_init
 log("Start at " A_YYYY "-" A_MM "-" A_DD)
@@ -418,12 +420,19 @@ F5::ExitApp
 F6::Reload
 #If
 
+updateSite:=""
+
 update(){
 	global
 	req := ComObjCreate("MSXML2.ServerXMLHTTP")
-	; https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt
-	; https://github.com/Nigh/Genshin-fishing/releases/latest/download/version.txt
-	req.open("GET", "https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
+	if(updateMirror=="fastgit") {
+		updateSite:="https://download.fastgit.org"
+	} else if(updateMirror=="cnpmjs") {
+		updateSite:="https://github.com.cnpmjs.org"
+	} else {
+		updateSite:="https://github.com"
+	}
+	req.open("GET", updateSite "/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
 	req.onreadystatechange := Func("updateReady")
 	req.send()
 }
@@ -431,7 +440,7 @@ update(){
 ; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
 updateReqDone:=0
 updateReady(){
-	global req, version, updateReqDone
+	global req, version, updateReqDone, updateSite
 	log("update req.readyState=" req.readyState, 1)
     if (req.readyState != 4){  ; Not done yet.
         return
@@ -450,7 +459,7 @@ updateReady(){
 			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?`n`n发现新版本 " req.responseText " 是否下载?"
 			IfMsgBox Yes
 			{
-				UrlDownloadToFile, https://download.fastgit.org/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip, ./GenshinFishing.zip
+				UrlDownloadToFile, % updateSite "/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip", ./GenshinFishing.zip
 				if(ErrorLevel) {
 					MsgBox, 16,, % "Download failed`n下载失败"
 				} else {
