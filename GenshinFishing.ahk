@@ -1,4 +1,4 @@
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -13,6 +13,8 @@ update_log:="
 > Added support for 2560x1440 resolution
 > 将资源打包至二进制
 > Package resources to exe
+> 优化了自动升级功能
+> Optimised the automatic upgrade function
 
 )"
 
@@ -21,7 +23,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.1.2"
+version:="0.2.0"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -50,10 +52,13 @@ IniRead, debugmode, setting.ini, update, debug, 0
 Gosub, log_init
 log("Start at " A_YYYY "-" A_MM "-" A_DD)
 today:=A_MM . A_DD
+IfExist, updater.exe
+{
+	FileDelete, updater.exe
+}
 if(autoUpdate) {
 	if(lastUpdate!=today) {
 		log("Getting Update",0)
-		MsgBox,,Update,Getting Update`n获取最新版本,2
 		update()
 	} else {
 		IniRead, version_str, setting.ini, update, ver, "0"
@@ -65,7 +70,7 @@ if(autoUpdate) {
 	}
 } else {
 	log("Update Skiped",0)
-	MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
+	; MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
 }
 
 img_list:=Object("bar",Object("filename","bar.png")
@@ -461,15 +466,18 @@ updateReady(){
 			{
 				UrlDownloadToFile, % updateSite "/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip", ./GenshinFishing.zip
 				if(ErrorLevel) {
-					MsgBox, 16,, % "Download failed`n下载失败"
+					log("Err[" ErrorLevel "]Download failed", 0)
+					MsgBox, 16,, % "Err" ErrorLevel "`n`nDownload failed`n下载失败"
 				} else {
-					MsgBox, ,, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will exit now`n软件即将退出", 2
+					MsgBox, ,, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will restart now`n软件即将重启", 3
 					IniWrite, % A_MM A_DD, setting.ini, update, last
+					FileInstall, updater.exe, updater.exe, 1
+					Run, updater.exe
 					ExitApp
 				}
 			}
 		} else {
-			MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version`n`n软件已是最新版本", 2
+			; MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version`n`n软件已是最新版本", 2
 			IniWrite, % A_MM A_DD, setting.ini, update, last
 		}
 	} else {

@@ -19,6 +19,11 @@ if FileExist("version.txt")
 if InStr(FileExist("dist"), "D")
 {
 	FileRemoveDir, dist, 1
+	If (ErrorLevel)
+	{
+		MsgBox, % "removing dist`nERROR CODE=" ErrorLevel
+		ExitApp
+	}
 }
 
 FileCreateDir, dist
@@ -45,16 +50,22 @@ Loop, Files, .\assets\*, D
 }
 fip.Close()
 
+RunWait, ahk2exe.exe /in updater.ahk /out updater.exe /compress 1
+If (ErrorLevel)
+{
+	MsgBox, % "updater.ahk`nERROR CODE=" ErrorLevel
+	ExitApp
+}
 RunWait, ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /icon icon.ico /compress 1
 If (ErrorLevel)
 {
-	MsgBox, % "ERROR CODE=" ErrorLevel
+	MsgBox, % "GenshinFishing.ahk`nERROR CODE=" ErrorLevel
 	ExitApp
 }
 RunWait, autohotkey.exe .\GenshinFishing.ahk --out=version
 If (ErrorLevel)
 {
-	MsgBox, % "ERROR CODE=" ErrorLevel
+	MsgBox, % "get version`nERROR CODE=" ErrorLevel
 	ExitApp
 }
 RunWait, powershell -command "Compress-Archive -Path .\GenshinFishing.exe -DestinationPath GenshinFishing.zip",, Hide
@@ -64,6 +75,7 @@ If (ErrorLevel)
 	ExitApp
 }
 FileDelete, GenshinFishing.exe
+FileDelete, updater.exe
 FileMove, GenshinFishing.zip, dist\GenshinFishing.zip, 1
 FileMove, version.txt, dist\version.txt, 1
 MsgBox, Build Finished
