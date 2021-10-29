@@ -46,7 +46,7 @@ UAC()
 IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
 IniRead, autoUpdate, setting.ini, update, autoupdate, 1
-IniRead, updateMirror, setting.ini, update, mirror, "fastgit"
+IniRead, updateMirror, setting.ini, update, mirror, fastgit
 IniWrite, % updateMirror, setting.ini, update, mirror
 IniRead, debugmode, setting.ini, update, debug, 0
 Gosub, log_init
