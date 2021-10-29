@@ -9,6 +9,8 @@ SetBatchLines, -1
 update_log:="
 (
 
+> 修复默认升级源
+> fix the default update url
 > 增加了 2560x1440 分辨率支持
 > Added support for 2560x1440 resolution
 > 将资源打包至二进制
@@ -23,7 +25,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.2.0"
+version:="0.2.1"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -46,7 +48,7 @@ UAC()
 IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
 IniRead, autoUpdate, setting.ini, update, autoupdate, 1
-IniRead, updateMirror, setting.ini, update, mirror, "fastgit"
+IniRead, updateMirror, setting.ini, update, mirror, fastgit
 IniWrite, % updateMirror, setting.ini, update, mirror
 IniRead, debugmode, setting.ini, update, debug, 0
 Gosub, log_init
