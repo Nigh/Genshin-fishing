@@ -9,14 +9,8 @@ SetBatchLines, -1
 update_log:="
 (
 
-> 修复默认升级源
-> fix the default update url
-> 增加了 2560x1440 分辨率支持
+> 增加了 2560x1080 分辨率支持
 > Added support for 2560x1440 resolution
-> 将资源打包至二进制
-> Package resources to exe
-> 优化了自动升级功能
-> Optimised the automatic upgrade function
 
 )"
 
@@ -25,7 +19,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.2.1"
+version:="0.2.2Debug"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -426,8 +420,6 @@ Return
 F5::ExitApp
 F6::Reload
 #If
-
-updateSite:=""
 
 update(){
 	global
