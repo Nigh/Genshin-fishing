@@ -9,14 +9,8 @@ SetBatchLines, -1
 update_log:="
 (
 
-> 修复默认升级源
-> fix the default update url
-> 增加了 2560x1440 分辨率支持
+> 增加了 2560x1080 分辨率支持
 > Added support for 2560x1440 resolution
-> 将资源打包至二进制
-> Package resources to exe
-> 优化了自动升级功能
-> Optimised the automatic upgrade function
 
 )"
 
@@ -25,7 +19,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.2.1"
+version:="0.2.3"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -44,6 +38,7 @@ if A_Args.Length() > 0
 #Include menu.ahk
 
 UAC()
+#include notice.ahk
 
 IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
@@ -68,12 +63,13 @@ if(autoUpdate) {
 			IniWrite, % version, setting.ini, update, ver
 			MsgBox, % version "`nUpdate log`n更新日志`n`n" update_log
 		}
-		ttm("Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动")
 	}
 } else {
 	log("Update Skiped",0)
 	; MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
 }
+
+ttm("Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动")
 
 img_list:=Object("bar",Object("filename","bar.png")
 ,"casting",Object("filename","casting.png")
@@ -426,8 +422,6 @@ Return
 F5::ExitApp
 F6::Reload
 #If
-
-updateSite:=""
 
 update(){
 	global
