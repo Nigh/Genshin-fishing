@@ -11,6 +11,10 @@
 - 中国大陆: https://kaihei.co/IWXRLp
 - Discord: https://discord.gg/5PCebykNaC
 
+## Related Repo 相关项目
+- DoMiSo-Genshin(原神自动弹琴人偶): https://github.com/Nigh/DoMiSo-genshin
+- LyreMaster-Genshin(原神手搓弹琴大师): https://github.com/Nigh/LyreMaster-Genshin
+
 ## Usage 用法用量
 解压到文件夹，直接运行exe即可。  
 Unzip it into a folder and run the exe directly.
