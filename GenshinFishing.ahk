@@ -10,7 +10,10 @@ update_log:="
 (
 
 > 增加了 2560x1080 分辨率支持
-> Added support for 2560x1440 resolution
+> Added support for 2560x1080 resolution
+> 增加了 3440x1440 分辨率支持
+> Added support for 3440x1440 resolution
+
 
 )"
 
@@ -19,7 +22,7 @@ debug:=0
 Else
 debug:=1
 
-version:="0.2.3"
+version:="0.2.4"
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
