@@ -60,7 +60,7 @@ IfExist, updater.exe
 }
 #include update.ahk
 
-TrayTip "Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动"
+TrayTip, % "Genshin Fishing Automata", % "Genshin Fishing Automata Start`nv" version "`n原神钓鱼人偶启动"
 
 img_list:=Object("bar",Object("filename","bar.png")
 ,"casting",Object("filename","casting.png")
