@@ -9,20 +9,15 @@ SetBatchLines, -1
 update_log:="
 (
 
-> 增加了 2560x1080 分辨率支持
-> Added support for 2560x1080 resolution
-> 增加了 3440x1440 分辨率支持
-> Added support for 3440x1440 resolution
+> 现在更新源将会自动选择
+> The update source will now be automatically selected
 
 
 )"
 
-if A_IsCompiled
-debug:=0
-Else
-debug:=1
+version:="0.2.5"
 
-version:="0.2.4"
+;@Ahk2Exe-IgnoreBegin
 if A_Args.Length() > 0
 {
 	for n, param in A_Args
@@ -36,7 +31,14 @@ if A_Args.Length() > 0
 		}
 	}
 }
+;@Ahk2Exe-IgnoreEnd
 
+;@Ahk2Exe-SetCompanyName HelloWorks
+;@Ahk2Exe-SetName Genshin Fishing Automata
+;@Ahk2Exe-SetDescription Genshin Fishing Automata
+;@Ahk2Exe-SetVersion %version%
+;@Ahk2Exe-SetMainIcon icon.ico
+;@Ahk2Exe-ExeName GenshinFishing
 
 #Include menu.ahk
 
@@ -46,33 +48,18 @@ UAC()
 IniRead, logLevel, setting.ini, update, log, 0
 IniRead, lastUpdate, setting.ini, update, last, 0
 IniRead, autoUpdate, setting.ini, update, autoupdate, 1
-IniRead, updateMirror, setting.ini, update, mirror, fastgit
+IniRead, updateMirror, setting.ini, update, mirror, 1
 IniWrite, % updateMirror, setting.ini, update, mirror
 IniRead, debugmode, setting.ini, update, debug, 0
 Gosub, log_init
 log("Start at " A_YYYY "-" A_MM "-" A_DD)
-today:=A_MM . A_DD
 IfExist, updater.exe
 {
 	FileDelete, updater.exe
 }
-if(autoUpdate) {
-	if(lastUpdate!=today) {
-		log("Getting Update",0)
-		update()
-	} else {
-		IniRead, version_str, setting.ini, update, ver, "0"
-		if(version_str!=version) {
-			IniWrite, % version, setting.ini, update, ver
-			MsgBox, % version "`nUpdate log`n更新日志`n`n" update_log
-		}
-	}
-} else {
-	log("Update Skiped",0)
-	; MsgBox,,Update,Update Skiped`n跳过升级`n`nCurrent version`n当前版本`nv%version%,2
-}
+#include update.ahk
 
-ttm("Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动")
+TrayTip "Genshin Fishing automata Start`nv" version "`n原神钓鱼人偶启动"
 
 img_list:=Object("bar",Object("filename","bar.png")
 ,"casting",Object("filename","casting.png")
@@ -421,68 +408,10 @@ ExitApp
 donothing:
 Return
 
-#If debug
+;@Ahk2Exe-IgnoreBegin
 F5::ExitApp
 F6::Reload
-#If
-
-update(){
-	global
-	req := ComObjCreate("MSXML2.ServerXMLHTTP")
-	if(updateMirror=="fastgit") {
-		updateSite:="https://download.fastgit.org"
-	} else if(updateMirror=="cnpmjs") {
-		updateSite:="https://github.com.cnpmjs.org"
-	} else {
-		updateSite:="https://github.com"
-	}
-	req.open("GET", updateSite "/Nigh/Genshin-fishing/releases/latest/download/version.txt", true)
-	req.onreadystatechange := Func("updateReady")
-	req.send()
-}
-
-; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
-updateReqDone:=0
-updateReady(){
-	global req, version, updateReqDone, updateSite
-	log("update req.readyState=" req.readyState, 1)
-    if (req.readyState != 4){  ; Not done yet.
-        return
-	}
-	if(updateReqDone){
-		log("state already changed", 1)
-		Return
-	}
-	updateReqDone := 1
-	log("update req.status=" req.status, 1)
-    if (req.status == 200){ ; OK.
-        ; MsgBox % "Latest version: " req.responseText
-		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
-		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", verNew)
-		if(verNow1*10000+verNow2*100+verNow3<verNew1*10000+verNew2*100+verNew3) {
-			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?`n`n发现新版本 " req.responseText " 是否下载?"
-			IfMsgBox Yes
-			{
-				UrlDownloadToFile, % updateSite "/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip", ./GenshinFishing.zip
-				if(ErrorLevel) {
-					log("Err[" ErrorLevel "]Download failed", 0)
-					MsgBox, 16,, % "Err" ErrorLevel "`n`nDownload failed`n下载失败"
-				} else {
-					MsgBox, ,, % "File saved as GenshinFishing.zip`n更新下载完成 GenshinFishing.zip`n`nProgram will restart now`n软件即将重启", 3
-					IniWrite, % A_MM A_DD, setting.ini, update, last
-					FileInstall, updater.exe, updater.exe, 1
-					Run, updater.exe
-					ExitApp
-				}
-			}
-		} else {
-			; MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version`n`n软件已是最新版本", 2
-			IniWrite, % A_MM A_DD, setting.ini, update, last
-		}
-	} else {
-        MsgBox, 16,, % "Update failed`n`n更新失败`n`nStatus=" req.status
-	}
-}
+;@Ahk2Exe-IgnoreEnd
 
 UAC()
 {

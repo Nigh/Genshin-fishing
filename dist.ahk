@@ -56,7 +56,7 @@ If (ErrorLevel)
 	MsgBox, % "updater.ahk`nERROR CODE=" ErrorLevel
 	ExitApp
 }
-RunWait, ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /icon icon.ico /compress 1
+RunWait, ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /compress 1
 If (ErrorLevel)
 {
 	MsgBox, % "GenshinFishing.ahk`nERROR CODE=" ErrorLevel
