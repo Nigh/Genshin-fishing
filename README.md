@@ -8,8 +8,12 @@
 - Youtube (En): https://www.youtube.com/watch?v=3lvCEh7quxE
 
 ## Communities 社群
-- 中国大陆: https://kaihei.co/IWXRLp
-- Discord: https://discord.gg/5PCebykNaC
+- 开黑啦(中国大陆): https://kaihei.co/IWXRLp
+- Discord(Global): https://discord.gg/5PCebykNaC
+
+## Related Repo 相关项目
+- DoMiSo-Genshin(原神自动弹琴人偶): https://github.com/Nigh/DoMiSo-genshin
+- LyreMaster-Genshin(原神手搓弹琴大师): https://github.com/Nigh/LyreMaster-Genshin
 
 ## Related Repo 相关项目
 - DoMiSo-Genshin(原神自动弹琴人偶): https://github.com/Nigh/DoMiSo-genshin
@@ -28,6 +32,7 @@ The following image settings have been tested to work properly:
 | 分辨率 Resolution | 支持 Support |
 | ----------------- | ------------ |
 | 3840 x 2160       | ✔            |
+| 3440 x 1440       | ✔            |
 | 1920 x 1080       | ✔            |
 | 2560 x 1440       | ✔            |
 | 2560 x 1080       | ✔            |
@@ -39,6 +44,9 @@ The following image settings have been tested to work properly:
 
 如果需要更多的分辨率支持，请提交issue。  
 If you need more resolutions support, please submit an issue.
+
+因个人精力有限，非常规尺寸的分辨率将不予支持。  
+Due to limited spare time, resolutions of unconventional sizes will not be supported. 
 
 ### Setting.ini
 
