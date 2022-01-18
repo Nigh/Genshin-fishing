@@ -69,7 +69,7 @@ tryNextUpdate()
 ; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
 
 updateReady(){
-	global req, version, updateReqDone, updateSite, mirrorList, updateMirror, updatemirrorTried
+	global req, version, updateReqDone, updateSite
 	log("update req.readyState=" req.readyState, 1)
     if (req.readyState != 4){  ; Not done yet.
         return
