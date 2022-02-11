@@ -16,7 +16,9 @@ update_log:="
 
 )"
 
-version:="0.2.5"
+version:="0.2.5Hotfix"
+isCNServer:=0
+; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。
 
 ;@Ahk2Exe-IgnoreBegin
 if A_Args.Length() > 0
@@ -110,10 +112,13 @@ log(txt,level=0)
 
 genshin_window_exist()
 {
+	; global isCNServer
 	genshinHwnd := WinExist("ahk_exe GenshinImpact.exe")
+	; isCNServer := 0
 	if not genshinHwnd
 	{
 		genshinHwnd := WinExist("ahk_exe YuanShen.exe")
+		; isCNServer := 1
 	}
 	return genshinHwnd
 }
@@ -175,8 +180,13 @@ dLinePt(p)
 }
 
 getState:
+if(isCNServer) {
+	iconLeftPt := 0.167
+} else {
+	iconLeftPt := 0.222
+}
 ; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
-ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
+ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
 	state:="ready"
 	statePredict:=state
@@ -184,7 +194,7 @@ if(!ErrorLevel){
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
+ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
 	state:="reel"
 	statePredict:=state
@@ -192,7 +202,7 @@ if(!ErrorLevel){
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, iconX, iconY, winW-dLinePt(0.167), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
+ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
 	state:="casting"
 	statePredict:=state
