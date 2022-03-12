@@ -1,4 +1,4 @@
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -21,14 +21,16 @@ supported_resolutions:="
 update_log:="
 (
 
-> 现在更新源将会自动选择
-> The update source will now be automatically selected
-
-
+> 新增 1440x900 分辨率支持
+> Added 1440x900 resolution support
+> 添加了对于更靠近中心的UI位置的支持
+> Added support for UI positions which is closer to center 
+> 进一步优化了图像的搜索效率
+> Further optimized image search efficiency
 
 )"
 
-version:="0.2.5Hotfix"
+version:="0.2.6"
 isCNServer:=0
 ; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。
 
@@ -191,31 +193,60 @@ dLinePt(p)
 	return Ceil(p*dLine)
 }
 
+; iconSize = dLinePt(0.0353) * dLinePt(0.0442)
+
 getState:
 if(isCNServer) {
 	iconLeftPt := 0.167
 } else {
 	iconLeftPt := 0.222
 }
+iconTopPt := 0.084
+iconBottomPt := 0
+iconRightPt := 0
+
+if(last_iconX>0) {
+	last_iconLeftPt := (winW - last_iconX)/dLine
+	last_iconTopPt := (winH - last_iconY)/dLine
+	
+	iconBottomPt := (winH - last_iconY - dLinePt(0.0442*1.5))/dLine
+	iconRightPt := (winW - last_iconX - dLinePt(0.0353*1.5))/dLine
+	if(iconBottomPt<0){
+		iconBottomPt := 0
+	}
+	if(iconRightPt<0){
+		iconRightPt := 0
+	}
+	iconLeftPt := last_iconLeftPt + (0.0353*0.5)
+	iconTopPt := last_iconTopPt + (0.0442*0.5)
+	log("lastIcon=" last_iconX ", " last_iconY "  dLine=" dLine, 3)
+}
+; log("search from [" winW-dLinePt(iconLeftPt) ", " winH-dLinePt(iconTopPt) "] to [" winW-dLinePt(iconRightPt) ", " winH-dLinePt(iconBottomPt) "]", 3)
 ; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
+ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
+	last_iconX := iconX
+	last_iconY := iconY
 	state:="ready"
 	statePredict:=state
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
+ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
+	last_iconX := iconX
+	last_iconY := iconY
 	state:="reel"
 	statePredict:=state
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
 }
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(0.084), winW, winH, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
+ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
+	last_iconX := iconX
+	last_iconY := iconY
 	state:="casting"
 	statePredict:=state
 	stateUnknownStart := 0
@@ -227,6 +258,8 @@ if(stateUnknownStart == 0) {
 	stateUnknownStart := A_TickCount
 }
 if(statePredict!="unknown" && A_TickCount - stateUnknownStart>=2000){
+	last_iconX := 0
+	last_iconY := 0
 	statePredict:="unknown"
 	; Click, Up
 	log("state->" statePredict, 1)
@@ -239,13 +272,11 @@ if(!genshin_hwnd){
 	SetTimer, main, -800
 	Return
 }
-if(WinExist("A") != genshin_hwnd)
-{
+if(WinExist("A") != genshin_hwnd) {
 	SetTimer, main, -500
 	Return
 }
 getClientSize(genshin_hwnd, winW, winH)
-
 if(oldWinW!=winW || oldWinH!=winH) {
 	log("Get dimension=" winW "x" winH,1)
 	if(InStr(FileExist(A_Temp "/genshinfishing/" winW winH), "D")) {
@@ -281,13 +312,12 @@ if(oldWinW!=winW || oldWinH!=winH) {
 oldWinW:=winW
 oldWinH:=winH
 if(!isResolutionValid) {
-	tt("Unsupported resolution`n不支持的分辨率`n" winW "x" winH)
+	tt("Unsupported resolution`n不支持的分辨率`n" winW "x" winH "`n`nThe supported resolutions are as follows`n支持的分辨率如下`n" supported_resolutions)
 	SetTimer, main, -800
 	Return
 }
 
-if(statePredict=="unknown" || statePredict=="ready")
-{
+if(statePredict=="unknown" || statePredict=="ready") {
 	Gosub, getState
 	if(statePredict!="unknown" && debugmode){
 		tt("state = " state "`nstatePredict = " statePredict "`n" winW "," winH)
