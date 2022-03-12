@@ -15,6 +15,15 @@
 - DoMiSo-Genshin(原神自动弹琴人偶): https://github.com/Nigh/DoMiSo-genshin
 - LyreMaster-Genshin(原神手搓弹琴大师): https://github.com/Nigh/LyreMaster-Genshin
 
+## Related Repo 相关项目
+- DoMiSo-Genshin(原神自动弹琴人偶): https://github.com/Nigh/DoMiSo-genshin
+- LyreMaster-Genshin(原神手搓弹琴大师): https://github.com/Nigh/LyreMaster-Genshin
+
+## Download(下载)
+
+- [GitHub Download - GitHub下载](https://github.com/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip)
+- [Mirror Download - 镜像下载](https://ghproxy.com/https://github.com/Nigh/Genshin-fishing/releases/latest/download/GenshinFishing.zip)
+
 ## Usage 用法用量
 解压到文件夹，直接运行exe即可。  
 Unzip it into a folder and run the exe directly.
@@ -33,9 +42,7 @@ The following image settings have been tested to work properly:
 | 2560 x 1440       | ✔            |
 | 2560 x 1080       | ✔            |
 | 1600 x 900        | ✔            |
-| 1440 x 900        | ❌            |
-| 1366 x 768        | ❌            |
-| 1360 x 768        | ❌            |
+| 1440 x 900        | ✔            |
 | 1280 x 720        | ✔            |
 
 如果需要更多的分辨率支持，请提交issue。  

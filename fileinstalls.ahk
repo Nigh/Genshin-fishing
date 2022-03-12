@@ -8,6 +8,15 @@ FileInstall, .\assets\1280720\ready.png, % A_Temp "\genshinfishing\1280720\ready
 FileInstall, .\assets\1280720\reel.png, % A_Temp "\genshinfishing\1280720\reel.png", 1
 FileInstall, .\assets\1280720\right.png, % A_Temp "\genshinfishing\1280720\right.png", 1
 
+FileCreateDir, % A_Temp "\genshinfishing\1440900"
+FileInstall, .\assets\1440900\bar.png, % A_Temp "\genshinfishing\1440900\bar.png", 1
+FileInstall, .\assets\1440900\casting.png, % A_Temp "\genshinfishing\1440900\casting.png", 1
+FileInstall, .\assets\1440900\cur.png, % A_Temp "\genshinfishing\1440900\cur.png", 1
+FileInstall, .\assets\1440900\left.png, % A_Temp "\genshinfishing\1440900\left.png", 1
+FileInstall, .\assets\1440900\ready.png, % A_Temp "\genshinfishing\1440900\ready.png", 1
+FileInstall, .\assets\1440900\reel.png, % A_Temp "\genshinfishing\1440900\reel.png", 1
+FileInstall, .\assets\1440900\right.png, % A_Temp "\genshinfishing\1440900\right.png", 1
+
 FileCreateDir, % A_Temp "\genshinfishing\1600900"
 FileInstall, .\assets\1600900\bar.png, % A_Temp "\genshinfishing\1600900\bar.png", 1
 FileInstall, .\assets\1600900\casting.png, % A_Temp "\genshinfishing\1600900\casting.png", 1
