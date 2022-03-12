@@ -1,10 +1,22 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance, ignore
 #Persistent
 SetBatchLines, -1
+
+supported_resolutions:="
+(
+1280 x 720
+1440 x 900
+1600 x 900
+1920 x 1080
+2560 x 1080
+2560 x 1440
+3440 x 1440
+3840 x 2160
+)"
 
 update_log:="
 (

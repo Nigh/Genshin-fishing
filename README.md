@@ -42,9 +42,7 @@ The following image settings have been tested to work properly:
 | 2560 x 1440       | ✔            |
 | 2560 x 1080       | ✔            |
 | 1600 x 900        | ✔            |
-| 1440 x 900        | ❌            |
-| 1366 x 768        | ❌            |
-| 1360 x 768        | ❌            |
+| 1440 x 900        | ✔            |
 | 1280 x 720        | ✔            |
 
 如果需要更多的分辨率支持，请提交issue。  
