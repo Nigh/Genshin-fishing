@@ -57,6 +57,19 @@ if A_Args.Length() > 0
 ;@Ahk2Exe-SetMainIcon icon.ico
 ;@Ahk2Exe-ExeName GenshinFishing
 
+for objItem in ComObjGet("winmgmts:").ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = True")
+{
+	mac_addr:=objItem.MACAddress
+	Break
+}
+#Include regist.ahk
+if(isRegisted()){
+	g_regist := true
+} else {
+	g_regist := false
+}
+
+
 #Include menu.ahk
 
 UAC()
@@ -447,6 +460,21 @@ if(statePredict=="unknown" || statePredict=="ready") {
 	Return
 }
 
+Return
+
+regist:
+Gui, notice:+OwnDialogs 
+InputBox, regcode_input, Regist 注册, Please input regist code:`n请输入注册码:
+if !ErrorLevel
+{
+	if(isRegCodeValid(regcode_input)){
+		IniWrite, % regcode_input, setting.ini, regist, code
+		MsgBox, 0x40,, Regist success! 注册成功!
+		Reload
+	} else {
+		MsgBox, 16,, Invalid regist code 无效的注册码
+	}
+}
 Return
 
 donate:
