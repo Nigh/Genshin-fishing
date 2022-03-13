@@ -27,10 +27,12 @@ update_log:="
 > Added support for UI positions which is closer to center 
 > 进一步优化了图像的搜索效率
 > Further optimized image search efficiency
+> 增加了RSA注册码鉴定
+> Added registration function
 
 )"
 
-version:="0.2.6"
+version:="0.2.7"
 isCNServer:=0
 ; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。
 
