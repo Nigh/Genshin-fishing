@@ -77,3 +77,10 @@ specify `mirror=0` to get update from github.com, or `mirror=fastgit`(default) f
 
 在以上配置下，目前单帧画面的检测用时为 `25ms`  
 Under the above hardware configuration, the current detection time for a single frame is `25ms`.
+
+### Donate(捐助)
+
+- Ko-fi: https://ko-fi.com/xianii
+- Paypal: https://paypal.me/xianii
+- Wechat: ![](assets/wechat.jpg)
+- Alipay: ![](assets/alipay.jpg)
