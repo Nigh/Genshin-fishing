@@ -2,7 +2,7 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-#SingleInstance, ignore
+#SingleInstance, force
 #Persistent
 SetBatchLines, -1
 
@@ -21,20 +21,18 @@ supported_resolutions:="
 update_log:="
 (
 
-> 新增 1440x900 分辨率支持
-> Added 1440x900 resolution support
-> 添加了对于更靠近中心的UI位置的支持
-> Added support for UI positions which is closer to center 
-> 进一步优化了图像的搜索效率
-> Further optimized image search efficiency
-> 增加了RSA注册码鉴定
-> Added registration function
+> 新增了软件开始正常工作的提示
+> Added a prompt for the software to start working properly
+> 修复了一个导致注册用户无法正常使用的问题（(*^_^*)
+> Fixed an issue that caused registered users to not be able to use it properly ((*^_^*))
+
 
 )"
 
-version:="0.2.7"
+version:="0.2.8"
 isCNServer:=0
 ; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。
+isWorking:=False
 
 ;@Ahk2Exe-IgnoreBegin
 if A_Args.Length() > 0
@@ -288,6 +286,7 @@ if(!genshin_hwnd){
 	Return
 }
 if(WinExist("A") != genshin_hwnd) {
+	isWorking:=False
 	SetTimer, main, -500
 	Return
 }
@@ -330,7 +329,12 @@ if(!isResolutionValid) {
 	tt("Unsupported resolution`n不支持的分辨率`n" winW "x" winH "`n`nThe supported resolutions are as follows`n支持的分辨率如下`n" supported_resolutions)
 	SetTimer, main, -800
 	Return
+} else {
+	if(isWorking==False) {
+		tt("Genshin Fishing Automata is working`n自动钓鱼人偶正常工作中")
+	}
 }
+isWorking:=True
 
 if(statePredict=="unknown" || statePredict=="ready") {
 	Gosub, getState

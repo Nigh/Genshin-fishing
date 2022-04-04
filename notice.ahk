@@ -42,10 +42,11 @@ if(!g_regist) {
 
 	Gui, show, w740
 	SetTimer, notice_cd, 1000
+	Return
 } else {
 	ttm("自动钓鱼人偶注册版已启动！`n感谢您的注册！`n`nGenshin Fishing Automata registed version is up!`nThank you for registering!", 1500)
+	goto notice_end
 }
-Return
 
 copymac:
 Clipboard:=mac_addr
@@ -75,3 +76,4 @@ if(A_GuiControl!="btn" onetwothree)
 }
 Gui, Hide
 
+notice_end:
