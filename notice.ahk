@@ -48,6 +48,7 @@ if(!g_regist) {
 	goto notice_end
 }
 
+
 copymac:
 Clipboard:=mac_addr
 Return

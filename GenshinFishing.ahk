@@ -26,10 +26,10 @@ update_log:="
 > 修复了一个导致注册用户无法正常使用的问题（(*^_^*)
 > Fixed an issue that caused registered users to not be able to use it properly ((*^_^*))
 
-
 )"
 
 version:="0.2.8"
+
 isCNServer:=0
 ; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。
 isWorking:=False
