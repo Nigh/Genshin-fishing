@@ -127,6 +127,7 @@ Return
 
 log_init:
 pLogfile:=FileOpen("genshinfishing.log", "a")
+lastLogWrite:=A_TickCount
 Return
 
 log(txt,level=0)
@@ -134,6 +135,10 @@ log(txt,level=0)
 	global logLevel, pLogfile
 	if(logLevel >= level) {
 		pLogfile.WriteLine(A_Hour ":" A_Min ":" A_Sec "." A_MSec "[" level "]:" txt)
+		if(A_TickCount - lastLogWrite > 10000) {
+			pLogfile.Close()
+			Gosub, log_init
+		}
 	}
 }
 
@@ -236,7 +241,11 @@ if(last_iconX>0) {
 }
 ; log("search from [" winW-dLinePt(iconLeftPt) ", " winH-dLinePt(iconTopPt) "] to [" winW-dLinePt(iconRightPt) ", " winH-dLinePt(iconBottomPt) "]", 3)
 ; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
+searchX0:=winW-dLinePt(iconLeftPt)
+searchY0:=winH-dLinePt(iconTopPt)
+searchX1:=winW-dLinePt(iconRightPt)
+searchY1:=winH-dLinePt(iconBottomPt)
+ImageSearch, iconX, iconY, searchX0, searchY0, searchX1, searchY1, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
 	last_iconX := iconX
 	last_iconY := iconY
@@ -245,8 +254,10 @@ if(!ErrorLevel){
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
+} else {
+	log("[" ErrorLevel "] not in ready state [" searchX0 "," searchY0 "," searchX1 "," searchY1 "]", 3)
 }
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
+ImageSearch, iconX, iconY, searchX0, searchY0, searchX1, searchY1, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
 	last_iconX := iconX
 	last_iconY := iconY
@@ -255,8 +266,10 @@ if(!ErrorLevel){
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
+} else {
+	log("[" ErrorLevel "] not in reel state [" searchX0 "," searchY0 "," searchX1 "," searchY1 "]", 3)
 }
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
+ImageSearch, iconX, iconY, searchX0, searchY0, searchX1, searchY1, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
 	last_iconX := iconX
 	last_iconY := iconY
@@ -265,6 +278,8 @@ if(!ErrorLevel){
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
+} else {
+	log("[" ErrorLevel "] not in casting state [" searchX0 "," searchY0 "," searchX1 "," searchY1 "]", 3)
 }
 state:="unknown"
 if(stateUnknownStart == 0) {
@@ -332,6 +347,7 @@ if(!isResolutionValid) {
 } else {
 	if(isWorking==False) {
 		tt("Genshin Fishing Automata is working`n自动钓鱼人偶正常工作中")
+		log("Genshin Window Active",1)
 	}
 }
 isWorking:=True
