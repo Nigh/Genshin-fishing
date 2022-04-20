@@ -84,3 +84,7 @@ Under the above hardware configuration, the current detection time for a single 
 - Paypal: https://paypal.me/xianii
 - Wechat: ![](assets/wechat.jpg)
 - Alipay: ![](assets/alipay.jpg)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/Nigh/Genshin-fishing.svg)](https://starchart.cc/Nigh/Genshin-fishing)
