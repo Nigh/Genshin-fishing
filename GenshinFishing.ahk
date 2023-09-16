@@ -12,6 +12,7 @@ supported_resolutions:="
 1440 x 900
 1600 x 900
 1920 x 1080
+1920 x 1200
 2560 x 1080
 2560 x 1440
 3440 x 1440
@@ -21,14 +22,12 @@ supported_resolutions:="
 update_log:="
 (
 
-> 新增了软件开始正常工作的提示
-> Added a prompt for the software to start working properly
-> 修复了一个导致注册用户无法正常使用的问题（(*^_^*)
-> Fixed an issue that caused registered users to not be able to use it properly ((*^_^*))
+> 新增1920x1200分辨率支持
+> Added 1920x1200 resolution support
 
 )"
 
-version:="0.2.8"
+version:="0.2.9"
 
 isCNServer:=0
 ; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。
@@ -127,6 +126,7 @@ Return
 
 log_init:
 pLogfile:=FileOpen("genshinfishing.log", "a")
+lastLogWrite:=A_TickCount
 Return
 
 log(txt,level=0)
@@ -134,6 +134,10 @@ log(txt,level=0)
 	global logLevel, pLogfile
 	if(logLevel >= level) {
 		pLogfile.WriteLine(A_Hour ":" A_Min ":" A_Sec "." A_MSec "[" level "]:" txt)
+		if(A_TickCount - lastLogWrite > 10000) {
+			pLogfile.Close()
+			Gosub, log_init
+		}
 	}
 }
 
@@ -236,7 +240,11 @@ if(last_iconX>0) {
 }
 ; log("search from [" winW-dLinePt(iconLeftPt) ", " winH-dLinePt(iconTopPt) "] to [" winW-dLinePt(iconRightPt) ", " winH-dLinePt(iconBottomPt) "]", 3)
 ; k:=(((winW**2)+(winH**2))**0.5)/(((1920**2)+(1080**2))**0.5)
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
+searchX0:=winW-dLinePt(iconLeftPt)
+searchY0:=winH-dLinePt(iconTopPt)
+searchX1:=winW-dLinePt(iconRightPt)
+searchY1:=winH-dLinePt(iconBottomPt)
+ImageSearch, iconX, iconY, searchX0, searchY0, searchX1, searchY1, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.ready.filename
 if(!ErrorLevel){
 	last_iconX := iconX
 	last_iconY := iconY
@@ -245,8 +253,10 @@ if(!ErrorLevel){
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
+} else {
+	log("[" ErrorLevel "] not in ready state [" searchX0 "," searchY0 "," searchX1 "," searchY1 "]", 3)
 }
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
+ImageSearch, iconX, iconY, searchX0, searchY0, searchX1, searchY1, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.reel.filename
 if(!ErrorLevel){
 	last_iconX := iconX
 	last_iconY := iconY
@@ -255,8 +265,10 @@ if(!ErrorLevel){
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
+} else {
+	log("[" ErrorLevel "] not in reel state [" searchX0 "," searchY0 "," searchX1 "," searchY1 "]", 3)
 }
-ImageSearch, iconX, iconY, winW-dLinePt(iconLeftPt), winH-dLinePt(iconTopPt), winW-dLinePt(iconRightPt), winH-dLinePt(iconBottomPt), % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
+ImageSearch, iconX, iconY, searchX0, searchY0, searchX1, searchY1, % "*32 *TransFuchsia " A_Temp "/genshinfishing/" winW winH "/" img_list.casting.filename
 if(!ErrorLevel){
 	last_iconX := iconX
 	last_iconY := iconY
@@ -265,6 +277,8 @@ if(!ErrorLevel){
 	stateUnknownStart := 0
 	log("state->" statePredict, 1)
 	return
+} else {
+	log("[" ErrorLevel "] not in casting state [" searchX0 "," searchY0 "," searchX1 "," searchY1 "]", 3)
 }
 state:="unknown"
 if(stateUnknownStart == 0) {
@@ -332,6 +346,7 @@ if(!isResolutionValid) {
 } else {
 	if(isWorking==False) {
 		tt("Genshin Fishing Automata is working`n自动钓鱼人偶正常工作中")
+		log("Genshin Window Active",1)
 	}
 }
 isWorking:=True
