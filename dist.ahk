@@ -1,8 +1,3 @@
-; # dependency:
-; # autohotkey in PATH
-; # ahk2exe in PATH
-; # mpress in ahk2exe path
-
 #SingleInstance, Force
 SetWorkingDir, %A_ScriptDir%
 
@@ -50,19 +45,19 @@ Loop, Files, .\assets\*, D
 }
 fip.Close()
 
-RunWait, ahk2exe.exe /in updater.ahk /out updater.exe /compress 1
+RunWait, .\binary\ahk2exe.exe /in updater.ahk /out updater.exe /base binary\AutoHotkeyU64.exe /compress 1
 If (ErrorLevel)
 {
 	MsgBox, % "updater.ahk`nERROR CODE=" ErrorLevel
 	ExitApp
 }
-RunWait, ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /compress 1
+RunWait, .\binary\ahk2exe.exe /in GenshinFishing.ahk /out GenshinFishing.exe /base binary\AutoHotkeyU64.exe /compress 1
 If (ErrorLevel)
 {
 	MsgBox, % "GenshinFishing.ahk`nERROR CODE=" ErrorLevel
 	ExitApp
 }
-RunWait, autohotkey.exe .\GenshinFishing.ahk --out=version
+RunWait, .\binary\AutoHotkeyU64.exe .\GenshinFishing.ahk --out=version
 If (ErrorLevel)
 {
 	MsgBox, % "get version`nERROR CODE=" ErrorLevel
