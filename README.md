@@ -38,6 +38,7 @@ The following image settings have been tested to work properly:
 | ----------------- | ------------ |
 | 3840 x 2160       | ✔            |
 | 3440 x 1440       | ✔            |
+| 1920 x 1200       | ✔            |
 | 1920 x 1080       | ✔            |
 | 2560 x 1440       | ✔            |
 | 2560 x 1080       | ✔            |
