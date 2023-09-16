@@ -35,6 +35,15 @@ FileInstall, .\assets\19201080\ready.png, % A_Temp "\genshinfishing\19201080\rea
 FileInstall, .\assets\19201080\reel.png, % A_Temp "\genshinfishing\19201080\reel.png", 1
 FileInstall, .\assets\19201080\right.png, % A_Temp "\genshinfishing\19201080\right.png", 1
 
+FileCreateDir, % A_Temp "\genshinfishing\19201200"
+FileInstall, .\assets\19201200\bar.png, % A_Temp "\genshinfishing\19201200\bar.png", 1
+FileInstall, .\assets\19201200\casting.png, % A_Temp "\genshinfishing\19201200\casting.png", 1
+FileInstall, .\assets\19201200\cur.png, % A_Temp "\genshinfishing\19201200\cur.png", 1
+FileInstall, .\assets\19201200\left.png, % A_Temp "\genshinfishing\19201200\left.png", 1
+FileInstall, .\assets\19201200\ready.png, % A_Temp "\genshinfishing\19201200\ready.png", 1
+FileInstall, .\assets\19201200\reel.png, % A_Temp "\genshinfishing\19201200\reel.png", 1
+FileInstall, .\assets\19201200\right.png, % A_Temp "\genshinfishing\19201200\right.png", 1
+
 FileCreateDir, % A_Temp "\genshinfishing\25601080"
 FileInstall, .\assets\25601080\bar.png, % A_Temp "\genshinfishing\25601080\bar.png", 1
 FileInstall, .\assets\25601080\casting.png, % A_Temp "\genshinfishing\25601080\casting.png", 1
