@@ -63,10 +63,6 @@ You can turn off automatic updates by specifying `autoupdate=0` in `setting.ini`
 
 在`setting.ini`中可以指定`autoupdate=0`来关闭自动更新
 
-specify `mirror=0` to get update from github.com, or `mirror=fastgit`(default) from fastgit.org
-
-中国大陆用户在升级频繁失败时，可以尝试指定 `mirror=cnpmjs` 更换升级源。
-
 ### 性能 Performance
 
 - CPU: AMD R5 3600
