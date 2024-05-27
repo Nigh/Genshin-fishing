@@ -15,6 +15,7 @@ supported_resolutions:="
 1920 x 1200
 2560 x 1080
 2560 x 1440
+2560 x 1600
 3440 x 1440
 3840 x 2160
 )"
@@ -22,12 +23,12 @@ supported_resolutions:="
 update_log:="
 (
 
-> 新增1920x1200分辨率支持
-> Added 1920x1200 resolution support
+> 新增2560x1600分辨率支持
+> Added 2560x1600 resolution support
 
 )"
 
-version:="0.2.9"
+version:="0.2.10"
 
 isCNServer:=0
 ; 出现了一个国际服玩家UI位置与国服不一致的情况。尚不能确定是服务器间差异或是其他的客户端差异所造成。暂时先令所有的图标搜索范围均扩大。

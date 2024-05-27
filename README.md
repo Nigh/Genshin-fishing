@@ -36,6 +36,7 @@ The following image settings have been tested to work properly:
 | 3440 x 1440       | ✔            |
 | 1920 x 1200       | ✔            |
 | 1920 x 1080       | ✔            |
+| 2560 x 1600       | ✔            |
 | 2560 x 1440       | ✔            |
 | 2560 x 1080       | ✔            |
 | 1600 x 900        | ✔            |
@@ -61,10 +62,6 @@ specify `log=1` or `log=2` in `setting.ini` to start logs with different levels 
 You can turn off automatic updates by specifying `autoupdate=0` in `setting.ini`
 
 在`setting.ini`中可以指定`autoupdate=0`来关闭自动更新
-
-specify `mirror=0` to get update from github.com, or `mirror=fastgit`(default) from fastgit.org
-
-中国大陆用户在升级频繁失败时，可以尝试指定 `mirror=cnpmjs` 更换升级源。
 
 ### 性能 Performance
 

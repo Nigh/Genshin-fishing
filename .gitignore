@@ -1,3 +1,4 @@
 *.ini
 dist
 *.log
+fileinstalls.ahk
