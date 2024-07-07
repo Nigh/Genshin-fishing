@@ -76,8 +76,14 @@ Under the above hardware configuration, the current detection time for a single 
 
 - Ko-fi: https://ko-fi.com/xianii
 - Paypal: https://paypal.me/xianii
-- Wechat: ![](assets/wechat.jpg)
-- Alipay: ![](assets/alipay.jpg)
+
+| Platform |                          Donate                          |
+| :------: | :------------------------------------------------------- |
+|  Ko-fi   | https://ko-fi.com/xianii                                 |
+|  Paypal  | https://paypal.me/xianii                                 |
+|  爱发电  | https://afdian.net/a/xianii                              |
+|   微信   | <img src="assets/wechat.jpg" alt="wechat" height="256"/> |
+|  支付宝  | <img src="assets/alipay.jpg" alt="alipay" height="256"/> |
 
 ## Stargazers over time
 
