@@ -74,9 +74,6 @@ Under the above hardware configuration, the current detection time for a single 
 
 ### Donate(捐助)
 
-- Ko-fi: https://ko-fi.com/xianii
-- Paypal: https://paypal.me/xianii
-
 | Platform |                          Donate                          |
 | :------: | :------------------------------------------------------- |
 |  Ko-fi   | https://ko-fi.com/xianii                                 |
