@@ -88,3 +88,11 @@ Under the above hardware configuration, the current detection time for a single 
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Nigh/Genshin-fishing.svg)](https://starchart.cc/Nigh/Genshin-fishing)
+
+
+
+## For developers
+
+Since this script is designed to run after being compiled into a binary. So you can not simply run the `GenshinFishing.ahk`. 
+
+You should run `dist.ahk` at fisrt, which will automatically generate a fileinstalls file and compile it into binary. Running the compiled binary is necessary to correctly release the assets files into the temporary directory.
