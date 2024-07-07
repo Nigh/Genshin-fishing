@@ -76,9 +76,23 @@ Under the above hardware configuration, the current detection time for a single 
 
 - Ko-fi: https://ko-fi.com/xianii
 - Paypal: https://paypal.me/xianii
-- Wechat: ![](assets/wechat.jpg)
-- Alipay: ![](assets/alipay.jpg)
+
+| Platform |                          Donate                          |
+| :------: | :------------------------------------------------------- |
+|  Ko-fi   | https://ko-fi.com/xianii                                 |
+|  Paypal  | https://paypal.me/xianii                                 |
+|  爱发电  | https://afdian.net/a/xianii                              |
+|   微信   | <img src="assets/wechat.jpg" alt="wechat" height="256"/> |
+|  支付宝  | <img src="assets/alipay.jpg" alt="alipay" height="256"/> |
 
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Nigh/Genshin-fishing.svg)](https://starchart.cc/Nigh/Genshin-fishing)
+
+
+
+## For developers
+
+Since this script is designed to run after being compiled into a binary. So you can not simply run the `GenshinFishing.ahk`. 
+
+You should run `dist.ahk` at fisrt, which will automatically generate a fileinstalls file and compile it into binary. Running the compiled binary is necessary to correctly release the assets files into the temporary directory.
